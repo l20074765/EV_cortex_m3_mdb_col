@@ -1,19 +1,11 @@
-/****************************************Copyright (c)*************************************************
-**                      Fujian Junpeng Communicaiton Technology Co.,Ltd.
-**                               http://www.easivend.com.cn
-**--------------File Info------------------------------------------------------------------------------
-** File name:           Uart2.h
-** Last modified Date:  2013-01-08
-** Last Version:         
-** Descriptions:        Uart2驱动程序相关函数声明                     
-**------------------------------------------------------------------------------------------------------
-** Created by:          sunway
-** Created date:        2013-01-08
-** Version:             V0.1
-** Descriptions:        The original version       
-********************************************************************************************************/
-#ifndef __UART2_H 
-#define __UART2_H
+#ifndef _MDB_UART_H_
+#define _MDB_UART_H_
+
+
+
+/*********************************************************************************************************
+**串口配置定义
+*********************************************************************************************************/
 
 #define  UART_IIR_INTID_RLS		((uint32_t)(3<<1)) 	/*!<Interrupt identification: Receive line status*/
 #define  UART_IIR_INTID_RDA		((uint32_t)(2<<1)) 	/*!<Interrupt identification: Receive data available*/
@@ -37,11 +29,6 @@
 
 #define	 UART2_BPS			9600
 
-#define  MDB_MAX_BLOCK_SIZE 36 				//最大数据块
-#define  MDB_ACK 		  	0x00			//应答
-#define  MDB_RET 		  	0xAA			//重试
-#define  MDB_NAK 		  	0xFF			//无应答
-
 #define  MDB_RCV_START     	0x80			//开始接收MDB数据
 #define  MDB_RCV_DATA     	0x81			//正在接收MDB数据
 #define  MDB_RCV_OK       	0x82			//MDB数据接收正确
@@ -50,7 +37,6 @@
 
 #define  MDB_ADD          	1			//MDB地址
 #define  MDB_DAT          	0			//MDB数据
-#define  RS232_GBA			2			//RS232串口模式
 
 #define  UART2MODESELECT0 	(1<<29)			//P1.29 select as GPIO IN LPC1700PinCfg.h
 #define  UART2MODESELECT1 	(1<<28)			//P1.28 select as GPIO IN LPC1700PinCfg.h
@@ -71,21 +57,50 @@
 #define  PARITY_F_1         3
 #define  PARITY_F_0         4
 
-void InitUart2(void);
-void ClrUart2Buff(void);
-void SetUart2ParityMode(unsigned char mode);
-void MdbPutChr(unsigned char dat,unsigned char mode);
-void RS232PutChr(unsigned char dat,unsigned char mode);
-void Uart2PutCh(unsigned char dat);
-void Uart2PutStr(unsigned char *buf,unsigned char lenth);
-unsigned char Uart2GetStr(unsigned char *buf, unsigned char len);
-unsigned char GetMdbStatus(void);
-void SetMdbStartStatus(void);
-void SetUart2MdbMode(void);
-void SetUart2Evb1Mode(void);
-void SetUart2Evb2Mode(void);
-void SetUart2Evb3Mode(void);
-void Uart2IsrHandler(void);
+
+
+/*********************************************************************************************************
+**MDB从设备定义
+*********************************************************************************************************/
+
+
+#define COL_GOODS_A		0xE0
+#define COL_GOODS_B		0xE8
+
+#define COL_FOODS_A		0x80
+#define COL_FOODS_B		0x88
+
+
+#define RESET			0x00
+#define SWITCH			0x01
+#define CTRL			0x02
+#define COLUMN			0x03
+#define POLL			0x04
+#define STATUS			0x05
+
+#define  MDB_ACK 		  	0x00			//应答
+#define  MDB_RET 		  	0xAA			//重试
+#define  MDB_NAK 		  	0xFF			//无应答
+
+/*********************************************************************************************************
+**uart串口函数声明
+*********************************************************************************************************/
+void uart2Init(void);
+void uart2Clear(void) ;
+void uart2SetParityMode(unsigned char mode) ;
+void MDB_putChr(unsigned char dat,unsigned char mode);
+void Uart2IsrHandler(void) ;
+
+/*********************************************************************************************************
+**mdb从设备函数声明
+*********************************************************************************************************/
+unsigned char MDB_colAddrIsOk(unsigned char addr);
+unsigned char MDB_recvOk(unsigned char len);
+void MDB_analysis(void);
+
+
 
 #endif
+
+
 /**************************************End Of File*******************************************************/

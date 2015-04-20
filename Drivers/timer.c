@@ -15,10 +15,7 @@
 #include "..\config.h"
 
 
-extern volatile unsigned int EVBCONVERSATIONWAITACKTIMEOUT;
-extern volatile unsigned int MDBCONVERSATIONWAITACKTIMEOUT;
-extern volatile unsigned int UART3RECVACKMSGTIMEOUT;
-extern volatile uint16_t RS232WAITRECVPACKTIME;
+
 extern volatile uint16_t RecvCmdTimer;
 extern volatile unsigned short HpHandleTimer;
 
@@ -93,15 +90,7 @@ void InitTimer(unsigned char TimerNumb,unsigned int TimerInterval)
 void TIMER0_IRQHandler (void)
 {  
 	OSIntEnter();
-	T0IR = 1;
-	if(EVBCONVERSATIONWAITACKTIMEOUT)
-		EVBCONVERSATIONWAITACKTIMEOUT--;
-	if(MDBCONVERSATIONWAITACKTIMEOUT)
-		MDBCONVERSATIONWAITACKTIMEOUT--;
-	if(RS232WAITRECVPACKTIME)
-		RS232WAITRECVPACKTIME--;
-	if(UART3RECVACKMSGTIMEOUT)
-		UART3RECVACKMSGTIMEOUT--;	
+	T0IR = 1;	
 	if(Timer.printTimer)
 		Timer.printTimer--;
 	if(Timer.pcm_handle_timeout)

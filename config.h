@@ -44,17 +44,13 @@ extern "C" {
 *********************************************************************************************************/
 #include ".\Drivers\uart0.h"
 #include ".\Drivers\uart1.h"
-#include ".\Drivers\uart2.h"
 #include ".\Drivers\uart3.h"
-#include ".\Drivers\MDB.h"
-#include ".\Drivers\EVB.h"
 #include ".\Drivers\buzzer.h"
 #include ".\Drivers\i2c.h"
 #include ".\Drivers\timer.h"
 #include ".\Drivers\key.h"
 #include ".\Drivers\pcoin.h"
-#include ".\Drivers\RS232.h"
-
+#include ".\Drivers\mdb_uart.h"
 
 
 
@@ -71,8 +67,7 @@ extern "C" {
 
 #include ".\API\logApi.h"
 #include ".\API\flashApi.h"
-#include ".\API\pcConApi.h"
-#include ".\API\colApi.h"
+
 
 #ifdef __cplusplus
 	}

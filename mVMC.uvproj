@@ -45,7 +45,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Hex\</OutputDirectory>
-          <OutputName>EV_BCD_DRV_V1.3_TST</OutputName>
+          <OutputName>EV_MDB_DRV_V1.0</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -431,19 +431,9 @@
               <FilePath>.\API\logApi.c</FilePath>
             </File>
             <File>
-              <FileName>pcConApi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\API\pcConApi.c</FilePath>
-            </File>
-            <File>
               <FileName>flashApi.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\API\flashApi.c</FilePath>
-            </File>
-            <File>
-              <FileName>colApi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\API\colApi.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -459,11 +449,6 @@
               <FileName>uart1.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Drivers\uart1.c</FilePath>
-            </File>
-            <File>
-              <FileName>uart2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Drivers\uart2.c</FilePath>
             </File>
             <File>
               <FileName>uart3.c</FileName>
@@ -496,19 +481,9 @@
               <FilePath>.\Drivers\pcoin.c</FilePath>
             </File>
             <File>
-              <FileName>MDB.c</FileName>
+              <FileName>mdb_uart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Drivers\MDB.c</FilePath>
-            </File>
-            <File>
-              <FileName>RS232.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Drivers\RS232.c</FilePath>
-            </File>
-            <File>
-              <FileName>EVB.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Drivers\EVB.c</FilePath>
+              <FilePath>.\Drivers\mdb_uart.c</FilePath>
             </File>
           </Files>
         </Group>

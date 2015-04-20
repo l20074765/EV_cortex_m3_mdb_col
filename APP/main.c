@@ -93,7 +93,7 @@ void SystemInit()
 	InitUart0();
 	Trace("InitUart0 init over.....\r\n");
 	InitUart1();
-	InitUart2();
+	uart2Init();
 	InitUart3();
     InitBuzzer();
 	InitI2C0();
