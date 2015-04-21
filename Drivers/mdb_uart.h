@@ -132,7 +132,9 @@ typedef struct _g_mdb_st_{
 	uint8 type;
 	ST_BIN *bin;
 	uint8 column;
-	uint8 ctrl;
+	uint8 coolCtrl;
+	uint8 hotCtrl;
+	uint8 lightCtrl;
 	int8 coolTemp;
 	int8 hotTemp;
 

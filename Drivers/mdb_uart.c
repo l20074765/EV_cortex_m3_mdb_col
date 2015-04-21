@@ -365,12 +365,13 @@ static void MDB_switch_rpt(void)
 
 static void MDB_ctrl_rpt(void)
 {
-	g_mdb_st[g_mdb_in].ctrl = recvbuf[1];
-	g_mdb_st[g_mdb_in].coolTemp = (int8)recvbuf[2];
-	g_mdb_st[g_mdb_in].hotTemp  = (int8)recvbuf[3];
-	
 	MDB_send(NULL,0);
 	mdb_col_status = MDB_COL_BUSY;
+	g_mdb_st[g_mdb_in].coolCtrl = recvbuf[1] & 0x01;
+	g_mdb_st[g_mdb_in].lightCtrl = (recvbuf[1] >> 1) & 0x01;
+	g_mdb_st[g_mdb_in].hotCtrl = (recvbuf[1] >> 2) & 0x01;
+	g_mdb_st[g_mdb_in].coolTemp = (int8)recvbuf[2];
+	g_mdb_st[g_mdb_in].hotTemp  = (int8)recvbuf[3];
 	MDB_mboxSend(G_MDB_CTRL);
 }
 

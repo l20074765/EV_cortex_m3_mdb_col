@@ -71,8 +71,16 @@ static void DEV_mdbSwitch(G_MDB_ST *g_mdb_st)
 
 static void DEV_mdbCtrl(G_MDB_ST *g_mdb_st)
 {
-	msleep(200);
-	MDB_setColStatus(MDB_COL_SUCCESS);	
+	uint8 res;
+	
+	res = EV_bento_light(1,g_mdb_st->lightCtrl);
+	if(res == 1){
+		MDB_setColStatus(MDB_COL_IDLE);	
+	}
+	else{
+		MDB_setColStatus(MDB_COL_ERROR);	
+	}
+	
 }
 
 
