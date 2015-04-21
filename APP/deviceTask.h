@@ -1,5 +1,5 @@
-#ifndef _TASK_DEVICE_H
-#define _TASK_DEVICE_H
+#ifndef _DEVICE_TASK_H
+#define _DEVICE_TASK_H
 
 #include "../config.h"
 
@@ -13,7 +13,7 @@
 **º¯ Êý ·µ»ØÖµ£º
 **********************************************************************************************/
 
-void TASK_Device(void *pdata);
+void DEV_task(void *pdata);
 
 
 #endif

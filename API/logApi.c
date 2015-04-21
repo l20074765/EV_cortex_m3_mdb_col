@@ -18,7 +18,7 @@
 #include "..\config.h"
 
 
-
+#if 0
 
 /*********************************************************************************************************
 ** Function name:       save_data
@@ -73,7 +73,7 @@ static unsigned char read_data(void *ptr,unsigned short len,unsigned short addr)
 
 
 
-
+#endif
 
 
 

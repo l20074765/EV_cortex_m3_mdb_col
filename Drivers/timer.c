@@ -17,7 +17,7 @@
 
 
 extern volatile uint16_t RecvCmdTimer;
-extern volatile unsigned short HpHandleTimer;
+
 
 
 
@@ -91,41 +91,13 @@ void TIMER0_IRQHandler (void)
 {  
 	OSIntEnter();
 	T0IR = 1;	
-	if(Timer.printTimer)
-		Timer.printTimer--;
-	if(Timer.pcm_handle_timeout)
-		Timer.pcm_handle_timeout--;
-	if(Timer.checkDeviceTimeout)
-		Timer.checkDeviceTimeout--;
-	if(Timer.HpHandleTimer)
-		Timer.HpHandleTimer--;
-	if(Timer.bill_comunication_timeout)
-		Timer.bill_comunication_timeout--;
-	if(Timer.led_paoma_timer)
-		Timer.led_paoma_timer--;
-	if(Timer.user_led_green)
-		Timer.user_led_green--;
-	if(Timer.secTimer)
-	{
+
+
+	if(Timer.secTimer){
 		Timer.secTimer--;
 	}
-	else
-	{
+	else{
 		Timer.secTimer = 100;
-		//处理秒级 定时变量
-		if(Timer.sec_changer_timer)
-			Timer.sec_changer_timer--;
-		if(Timer.sec_usr_op_timer)
-		Timer.sec_usr_op_timer--;
-		if(Timer.sec_hopper_state_timer)
-			Timer.sec_hopper_state_timer--;
-		if(Timer.sec_pccon_timer)
-			Timer.sec_pccon_timer--;
-		if(Timer.PayoutTimer)
-			Timer.PayoutTimer--;
-		if(Timer.sec_coin_reset_timer)
-			Timer.sec_coin_reset_timer--;
-
 	}
 	OSIntExit();
 }

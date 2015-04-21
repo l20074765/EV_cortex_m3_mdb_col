@@ -19,7 +19,7 @@
 #define MDB_BUF_SIZE	36
 
 static volatile unsigned char  recvbuf[MDB_BUF_SIZE];
-static volatile unsigned char  sendbuf[MDB_BUF_SIZE];
+static unsigned char  sendbuf[MDB_BUF_SIZE];
 static volatile unsigned char  rx;
 static volatile unsigned char  tx;
 static volatile unsigned char  crc;
@@ -27,10 +27,39 @@ static volatile unsigned char  crc;
 
 #define MDB_DEV_IDLE			0
 #define MDB_DEV_START			1
+#define MDB_DEV_RECV_ACK		2
+
 
 static volatile unsigned char  mdb_status = MDB_DEV_IDLE;
 static volatile unsigned char mdb_addr = 0;
 static volatile unsigned char mdb_cmd = 0;
+
+MDB_COL stCol;
+
+
+/*********************************************************************************************************
+** MDB通信消息队列
+*********************************************************************************************************/
+
+OS_EVENT *g_mdb_event;
+G_MDB_ST  g_mdb_st[G_MDB_SIZE];
+void *g_mdb[G_MDB_SIZE];
+
+
+/*********************************************************************************************************
+** Function name:     	MDB_createMbox
+** Descriptions:	    创建MDB通信邮箱
+** input parameters:    无
+** output parameters:   无
+** Returned value:      无
+*********************************************************************************************************/
+void MDB_createMbox(void)
+{
+	
+}
+
+
+
 
 
 
@@ -188,14 +217,27 @@ void Uart2IsrHandler(void)
 		udata = U2RBR & UART_RBR_MASKBIT;
 		if(mdb_status == MDB_DEV_START){
 			recvbuf[rx++] = udata;
-			crc += udata;
 			if(rx < MDB_BUF_SIZE){
 				if(MDB_recvOk(rx)){ //接收数据完成准备发送回应 必须尽快
-					mdb_status = MDB_DEV_IDLE;
-					MDB_analysis();
+					if(crc == recvbuf[rx - 1]){
+						MDB_analysis();
+						mdb_status = MDB_DEV_RECV_ACK;
+					}
+					else{
+						mdb_status = MDB_DEV_IDLE;
+					}
+				}
+				else{
+					crc += udata;
 				}
 			}
 			else{
+				mdb_status = MDB_DEV_IDLE;
+			}
+		}
+		else if(mdb_status == MDB_DEV_RECV_ACK){
+			mdb_status = MDB_DEV_IDLE;
+			if(udata == MDB_ACK){ //收到主机的ACK 至此确定主机收到从机的数据包
 				mdb_status = MDB_DEV_IDLE;
 			}
 		}
@@ -224,31 +266,33 @@ unsigned char MDB_recvOk(unsigned char len)
 	switch(mdb_cmd){
 		case RESET : case COLUMN :case POLL :case STATUS :
 			if(len >= 2) ok = 1;
-			ok = 1; //这些指令没有数据段
 			break;
 		case SWITCH: 
-			if(len >= 6) ok = 1;
+			if(len >= 4) ok = 1;
 			break;
 		case CTRL:	
 			if(len >= 6) ok = 1;
 			break;
 		default:break;
 	}
+	
 	return ok;
 }
 
 
 unsigned char MDB_send(unsigned char *data,unsigned char len)
 {
-	unsigned char i;
+	unsigned char i,crc = 0;
 	OSIntEnter();
 	if(len == 0){
 		MDB_putChr(MDB_ACK,MDB_ADD);
 	}
 	else{
-		for(i = 0;i < (len - 1);i++){
-			MDB_putChr(data[i],MDB_ADD);
+		for(i = 0;i < len;i++){
+			MDB_putChr(data[i],MDB_DAT);
+			crc += data[i];
 		}
+		MDB_putChr(crc,MDB_DAT);
 		MDB_putChr(MDB_ACK,MDB_ADD);
 	}
 	uart2SetParityMode(PARITY_F_0);
@@ -259,11 +303,45 @@ unsigned char MDB_send(unsigned char *data,unsigned char len)
 
 
 
+static void MDB_poll_rpt(void)
+{
+	unsigned char temp;
+	temp = stCol.status;
+	sendbuf[0] = temp;
+	MDB_send(sendbuf,1);
+	switch(temp){
+		case MDB_COL_JUSTRESET:
+			stCol.status = MDB_COL_IDLE;
+			break;
+		default:break;
+	}
+}
+
+static void MDB_reset_rpt(void)
+{
+	stCol.status = MDB_COL_JUSTRESET;
+	MDB_send(NULL,0);
+}
+
+
+static void MDB_switch_rpt(void)
+{
+	MDB_send(NULL,0);
+}
+
 void MDB_analysis(void)
 {
 	switch(mdb_cmd){
 		case RESET : 
-			MDB_send(NULL,0);
+			MDB_reset_rpt();
+			break;
+		case SWITCH:
+			MDB_switch_rpt();
+			break;
+		case POLL:
+			MDB_poll_rpt();
+			break;
+		case COLUMN:
 			break;
 		default:break;
 	}

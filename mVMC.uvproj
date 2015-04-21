@@ -411,14 +411,9 @@
               <FilePath>.\APP\main.c</FilePath>
             </File>
             <File>
-              <FileName>common.c</FileName>
+              <FileName>deviceTask.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\APP\common.c</FilePath>
-            </File>
-            <File>
-              <FileName>task_device.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\task_device.c</FilePath>
+              <FilePath>.\APP\deviceTask.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -484,6 +479,11 @@
               <FileName>mdb_uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Drivers\mdb_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\board.c</FilePath>
             </File>
           </Files>
         </Group>
