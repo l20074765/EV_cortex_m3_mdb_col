@@ -16,7 +16,11 @@
 
 
 
-extern volatile uint16_t RecvCmdTimer;
+/***********************************************************************************************
+*  ¶¨Ê±Æ÷
+*  add  by yoc 2014.2.18
+************************************************************************************************************/
+TIMER_ST Timer;
 
 
 
@@ -89,15 +93,13 @@ void InitTimer(unsigned char TimerNumb,unsigned int TimerInterval)
 *********************************************************************************************************/
 void TIMER0_IRQHandler (void)
 {  
+	unsigned short *ptr,i;
 	OSIntEnter();
 	T0IR = 1;	
-
-
-	if(Timer.secTimer){
-		Timer.secTimer--;
-	}
-	else{
-		Timer.secTimer = 100;
+	
+	ptr = (unsigned short *)&Timer;
+	for(i = 0;i < (sizeof(Timer) / 2);i++){
+		if(ptr[i])	ptr[i]--;
 	}
 	OSIntExit();
 }

@@ -1,7 +1,7 @@
 #ifndef _DEVICE_TASK_H
 #define _DEVICE_TASK_H
 
-#include "../config.h"
+
 
 
 

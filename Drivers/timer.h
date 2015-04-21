@@ -15,6 +15,18 @@
 #ifndef __TIMER_H 
 #define __TIMER_H
 
+//==============================定时器计数变量结构体========================================================
+//注意变量必须为unsigned short 型，只需定义即可使用
+
+
+typedef struct _timer_st_{
+	unsigned short bentoTimeout;
+}TIMER_ST;
+extern TIMER_ST Timer;
+
+
+
+
 void InitTimer(unsigned char TimerNumb,unsigned int TimerInterval);
 void TIMER0_IRQHandler (void);
 void TIMER1_IRQHandler (void);

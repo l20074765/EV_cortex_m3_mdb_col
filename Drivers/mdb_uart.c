@@ -40,10 +40,10 @@ MDB_COL stCol;
 /*********************************************************************************************************
 ** MDB通信消息队列
 *********************************************************************************************************/
-
-OS_EVENT *g_mdb_event;
-G_MDB_ST  g_mdb_st[G_MDB_SIZE];
-void *g_mdb[G_MDB_SIZE];
+static uint8 g_mdb_in	= 	0;
+OS_EVENT *g_mdb_event; //定义MDB事件
+G_MDB_ST  g_mdb_st[G_MDB_SIZE];//定义MDB消息结构体
+void *g_mdb[G_MDB_SIZE]; //定义MDB消息数组指针
 
 
 /*********************************************************************************************************
@@ -55,10 +55,18 @@ void *g_mdb[G_MDB_SIZE];
 *********************************************************************************************************/
 void MDB_createMbox(void)
 {
-	
+	g_mdb_event = OSQCreate(&g_mdb[0],G_MDB_SIZE);
 }
 
 
+
+void MDB_mboxSend(uint8 type)
+{
+	g_mdb_st[g_mdb_in].type = type;
+	g_mdb_st[g_mdb_in].col = &stCol;
+	OSQPost(g_mdb_event,&g_mdb_st[g_mdb_in]);
+	g_mdb_in = (g_mdb_in + 1) % G_MDB_SIZE;
+}
 
 
 
@@ -280,9 +288,9 @@ unsigned char MDB_recvOk(unsigned char len)
 }
 
 
-unsigned char MDB_send(unsigned char *data,unsigned char len)
+uint8 MDB_send(uint8 *data,uint8 len)
 {
-	unsigned char i,crc = 0;
+	uint8 i,crc = 0;
 	OSIntEnter();
 	if(len == 0){
 		MDB_putChr(MDB_ACK,MDB_ADD);
@@ -292,8 +300,8 @@ unsigned char MDB_send(unsigned char *data,unsigned char len)
 			MDB_putChr(data[i],MDB_DAT);
 			crc += data[i];
 		}
-		MDB_putChr(crc,MDB_DAT);
-		MDB_putChr(MDB_ACK,MDB_ADD);
+		MDB_putChr(crc,MDB_ADD);
+		//MDB_putChr(MDB_ACK,MDB_ADD);
 	}
 	uart2SetParityMode(PARITY_F_0);
 	OSIntExit();
@@ -302,6 +310,11 @@ unsigned char MDB_send(unsigned char *data,unsigned char len)
 }
 
 
+void MDB_setColStatus(uint8 type)
+{
+	stCol.status = type;
+}
+
 
 static void MDB_poll_rpt(void)
 {
@@ -309,24 +322,85 @@ static void MDB_poll_rpt(void)
 	temp = stCol.status;
 	sendbuf[0] = temp;
 	MDB_send(sendbuf,1);
-	switch(temp){
-		case MDB_COL_JUSTRESET:
-			stCol.status = MDB_COL_IDLE;
-			break;
-		default:break;
+	if(temp != MDB_COL_BUSY){
+		MDB_setColStatus(MDB_COL_IDLE);
 	}
 }
 
 static void MDB_reset_rpt(void)
 {
-	stCol.status = MDB_COL_JUSTRESET;
+	MDB_setColStatus(MDB_COL_BUSY);
 	MDB_send(NULL,0);
+	MDB_mboxSend(G_MDB_RESET);
 }
 
 
 static void MDB_switch_rpt(void)
 {
+	uint8 column;
+	column = recvbuf[1];
+	MDB_setColStatus(MDB_COL_BUSY);
 	MDB_send(NULL,0);
+	g_mdb_st[g_mdb_in].column = column;
+	MDB_mboxSend(G_MDB_SWITCH);
+}
+
+static void MDB_ctrl_rpt(void)
+{
+	g_mdb_st[g_mdb_in].ctrl = recvbuf[1];
+	g_mdb_st[g_mdb_in].coolTemp = (int8)recvbuf[2];
+	g_mdb_st[g_mdb_in].hotTemp  = (int8)recvbuf[3];
+	
+	MDB_send(NULL,0);
+	MDB_setColStatus(MDB_COL_BUSY);
+	MDB_mboxSend(G_MDB_CTRL);
+}
+
+static void MDB_column_rpt(void)
+{
+	uint8 index = 0,i,j,temp,colindex = 0;
+	
+	stCol.sum = 64;
+	for(i = 0;i < (stCol.sum / 8);i++){
+		temp = 0;
+		for(j = 0;j < 8;j++){
+			if(stCol.col[colindex++].empty == 1){
+				temp |= (0x01 << j);
+			}
+		}
+		sendbuf[index++] = temp;
+	}
+	
+	if(stCol.sum % 8){
+		temp = 0;
+		for(j = 0;j < (stCol.sum % 8);j++){
+			if(stCol.col[colindex++].empty == 1){
+				temp |= (0x01 << j);
+			}
+		}
+		sendbuf[index++] = temp;
+	}
+	sendbuf[index++] = stCol.sum;
+	sendbuf[index++] = stCol.sensorFault;
+	sendbuf[index++] = stCol.coolTemp;
+	sendbuf[index++] = stCol.hotTemp;	
+	MDB_send(sendbuf,index);
+	
+}
+
+
+static void MDB_status_rpt(void)
+{
+	uint8 index = 0;
+	sendbuf[index++] = 0x12;
+	sendbuf[index++] = 0x34;
+	sendbuf[index++] = 64;
+	sendbuf[index++] = 0;//reserved
+	sendbuf[index++] = 0;//reserved
+	sendbuf[index++] = 0x00;//feature
+	sendbuf[index++] = 0;//reserved
+	sendbuf[index++] = 0;//reserved
+	MDB_send(sendbuf,index);
 }
 
 void MDB_analysis(void)
@@ -338,10 +412,17 @@ void MDB_analysis(void)
 		case SWITCH:
 			MDB_switch_rpt();
 			break;
+		case CTRL:
+			MDB_ctrl_rpt();
+			break;
 		case POLL:
 			MDB_poll_rpt();
 			break;
 		case COLUMN:
+			MDB_column_rpt();
+			break;
+		case STATUS:
+			MDB_status_rpt();
 			break;
 		default:break;
 	}

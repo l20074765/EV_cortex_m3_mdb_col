@@ -60,17 +60,6 @@
 
 
 
-/*********************************************************************************************************
-** MDB通信消息队列
-*********************************************************************************************************/
-#define G_MDB_SIZE    20
-typedef struct _g_mdb_st_{
-	uint8 c;
-
-}G_MDB_ST;
-
-
-
 
 /*********************************************************************************************************
 **MDB从设备定义
@@ -104,11 +93,49 @@ typedef struct _g_mdb_st_{
 #define MDB_COL_ERROR		5
 #define MDB_COL_JUSTRESET	6
 
+typedef struct _col_column_{
+	uint8 empty;
+}COL_COLUMN;
+
+
+
 typedef struct _mdb_col_{
-	unsigned char status;
-	
+	uint8 status;
+	uint8 sum;
+	uint8 sensorFault;
+	uint8 coolTemp;
+	uint8 hotTemp;
+	COL_COLUMN col[80];
 }MDB_COL;
 
+
+
+
+/*********************************************************************************************************
+** MDB通信消息队列
+*********************************************************************************************************/
+#define G_MDB_SIZE    5
+typedef struct _g_mdb_st_{
+	uint8 type;
+	MDB_COL *col;
+	uint8 column;
+	uint8 ctrl;
+	int8 coolTemp;
+	int8 hotTemp;
+
+}G_MDB_ST;
+
+
+
+
+#define G_MDB_RESET			0
+#define G_MDB_SWITCH		1
+#define G_MDB_CTRL			2
+
+/*********************************************************************************************************
+**MDB邮箱接口声明
+*********************************************************************************************************/
+void MDB_createMbox(void);
 
 
 
@@ -127,7 +154,7 @@ void Uart2IsrHandler(void) ;
 unsigned char MDB_colAddrIsOk(unsigned char addr);
 unsigned char MDB_recvOk(unsigned char len);
 void MDB_analysis(void);
-
+void MDB_setColStatus(uint8 type);
 
 
 #endif

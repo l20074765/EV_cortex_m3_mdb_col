@@ -15,7 +15,7 @@
 #include "..\config.h"
 
 #define	UART1_BPS			9600
-#define	UART1BUFFERLEN		128
+#define	UART1BUFFERLEN		64
 
 volatile unsigned char Uart1RevBuff[UART1BUFFERLEN];
 volatile unsigned char Uart1RxdHead;
@@ -152,4 +152,19 @@ unsigned char Uart1GetCh(void)
 		Uart1RxdTail = 0;
 	return ch;
 }
+
+/*********************************************************************************************************
+** Function name:     	uart3_clr_buf
+** Descriptions:	    清除串口3接收缓冲区
+** input parameters:    无
+** output parameters:   无
+** Returned value:      无
+*********************************************************************************************************/
+void uart1ClrBuf(void) 
+{
+	Uart1RxdTail = 0;
+	Uart1RxdHead = 0;
+}
+
+
 /**************************************End Of File*******************************************************/

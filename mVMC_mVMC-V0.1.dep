@@ -1,6 +1,6 @@
 Dependencies for Project 'mVMC', Target 'mVMC-V0.1': (DO NOT MODIFY !)
 F (.\APP\main.c)(0x55359B1A)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\main.o --omf_browse .\hex\main.crf --depend .\hex\main.d)
-I (APP\..\config.h)(0x55359AF8)
+I (APP\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -19,21 +19,22 @@ I (APP\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (APP\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (APP\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (APP\..\.\Drivers\uart0.h)(0x53085506)
-I (APP\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (APP\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (APP\..\.\Drivers\uart3.h)(0x53BA340C)
 I (APP\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (APP\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (APP\..\.\Drivers\timer.h)(0x50EA31C2)
+I (APP\..\.\Drivers\timer.h)(0x5535BB58)
 I (APP\..\.\Drivers\key.h)(0x50F35B92)
 I (APP\..\.\Drivers\pcoin.h)(0x513FE226)
-I (APP\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (APP\..\.\Drivers\board.h)(0x55359CB7)
+I (APP\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (APP\..\.\Drivers\board.h)(0x5535B990)
 I (APP\..\.\API\logApi.h)(0x552F5BBE)
 I (APP\..\.\API\flashApi.h)(0x53B547BE)
-I (APP\deviceTask.h)(0x553594D8)
-F (.\APP\deviceTask.c)(0x55359CB7)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\devicetask.o --omf_browse .\hex\devicetask.crf --depend .\hex\devicetask.d)
-I (APP\deviceTask.h)(0x553594D8)
-I (APP\../config.h)(0x55359AF8)
+I (APP\..\.\API\bentoApi.h)(0x5535C7EB)
+I (APP\deviceTask.h)(0x5535C7D3)
+F (.\APP\deviceTask.c)(0x5535C210)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\devicetask.o --omf_browse .\hex\devicetask.crf --depend .\hex\devicetask.d)
+I (APP\deviceTask.h)(0x5535C7D3)
+I (APP\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -42,29 +43,30 @@ I (d:\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\setjmp.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\rt_misc.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
-I (APP\../.\firmware\firmware.h)(0x50134D44)
-I (APP\../.\firmware\..\uCOS_II\cpu\os_cpu.h)(0x4A6A6802)
-I (APP\../.\firmware\..\uCOS_II\os_cfg.h)(0x4A6A60F6)
-I (APP\../.\firmware\..\uCOS_II\uCOS_II.H)(0x3C51603C)
-I (APP\../.\firmware\lpc1700.h)(0x50EE56B8)
-I (APP\../.\firmware\target.h)(0x50E94AE0)
-I (APP\../.\firmware\zy_if.h)(0x50E94AE0)
-I (APP\../.\firmware\target_cfg.h)(0x50E94AE0)
-I (APP\../.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
-I (APP\../.\Drivers\uart0.h)(0x53085506)
-I (APP\../.\Drivers\uart1.h)(0x50EFA54E)
-I (APP\../.\Drivers\uart3.h)(0x53BA340C)
-I (APP\../.\Drivers\buzzer.h)(0x50EFA54E)
-I (APP\../.\Drivers\i2c.h)(0x50E93BAE)
-I (APP\../.\Drivers\timer.h)(0x50EA31C2)
-I (APP\../.\Drivers\key.h)(0x50F35B92)
-I (APP\../.\Drivers\pcoin.h)(0x513FE226)
-I (APP\../.\Drivers\mdb_uart.h)(0x55359DAA)
-I (APP\../.\Drivers\board.h)(0x55359CB7)
-I (APP\../.\API\logApi.h)(0x552F5BBE)
-I (APP\../.\API\flashApi.h)(0x53B547BE)
+I (APP\..\.\firmware\firmware.h)(0x50134D44)
+I (APP\..\.\firmware\..\uCOS_II\cpu\os_cpu.h)(0x4A6A6802)
+I (APP\..\.\firmware\..\uCOS_II\os_cfg.h)(0x4A6A60F6)
+I (APP\..\.\firmware\..\uCOS_II\uCOS_II.H)(0x3C51603C)
+I (APP\..\.\firmware\lpc1700.h)(0x50EE56B8)
+I (APP\..\.\firmware\target.h)(0x50E94AE0)
+I (APP\..\.\firmware\zy_if.h)(0x50E94AE0)
+I (APP\..\.\firmware\target_cfg.h)(0x50E94AE0)
+I (APP\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
+I (APP\..\.\Drivers\uart0.h)(0x53085506)
+I (APP\..\.\Drivers\uart1.h)(0x5535CC7E)
+I (APP\..\.\Drivers\uart3.h)(0x53BA340C)
+I (APP\..\.\Drivers\buzzer.h)(0x50EFA54E)
+I (APP\..\.\Drivers\i2c.h)(0x50E93BAE)
+I (APP\..\.\Drivers\timer.h)(0x5535BB58)
+I (APP\..\.\Drivers\key.h)(0x50F35B92)
+I (APP\..\.\Drivers\pcoin.h)(0x513FE226)
+I (APP\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (APP\..\.\Drivers\board.h)(0x5535B990)
+I (APP\..\.\API\logApi.h)(0x552F5BBE)
+I (APP\..\.\API\flashApi.h)(0x53B547BE)
+I (APP\..\.\API\bentoApi.h)(0x5535C7EB)
 F (.\API\logApi.c)(0x553595E4)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\logapi.o --omf_browse .\hex\logapi.crf --depend .\hex\logapi.d)
-I (API\..\config.h)(0x55359AF8)
+I (API\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -83,20 +85,21 @@ I (API\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (API\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (API\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (API\..\.\Drivers\uart0.h)(0x53085506)
-I (API\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (API\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (API\..\.\Drivers\uart3.h)(0x53BA340C)
 I (API\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (API\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (API\..\.\Drivers\timer.h)(0x50EA31C2)
+I (API\..\.\Drivers\timer.h)(0x5535BB58)
 I (API\..\.\Drivers\key.h)(0x50F35B92)
 I (API\..\.\Drivers\pcoin.h)(0x513FE226)
-I (API\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (API\..\.\Drivers\board.h)(0x55359CB7)
+I (API\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (API\..\.\Drivers\board.h)(0x5535B990)
 I (API\..\.\API\logApi.h)(0x552F5BBE)
 I (API\..\.\API\flashApi.h)(0x53B547BE)
+I (API\..\.\API\bentoApi.h)(0x5535C7EB)
 F (.\API\flashApi.c)(0x53B547BE)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\flashapi.o --omf_browse .\hex\flashapi.crf --depend .\hex\flashapi.d)
 I (API\flashAPi.h)(0x53B547BE)
-I (API\../config.h)(0x55359AF8)
+I (API\../config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -115,18 +118,51 @@ I (API\../.\firmware\zy_if.h)(0x50E94AE0)
 I (API\../.\firmware\target_cfg.h)(0x50E94AE0)
 I (API\../.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (API\../.\Drivers\uart0.h)(0x53085506)
-I (API\../.\Drivers\uart1.h)(0x50EFA54E)
+I (API\../.\Drivers\uart1.h)(0x5535CC7E)
 I (API\../.\Drivers\uart3.h)(0x53BA340C)
 I (API\../.\Drivers\buzzer.h)(0x50EFA54E)
 I (API\../.\Drivers\i2c.h)(0x50E93BAE)
-I (API\../.\Drivers\timer.h)(0x50EA31C2)
+I (API\../.\Drivers\timer.h)(0x5535BB58)
 I (API\../.\Drivers\key.h)(0x50F35B92)
 I (API\../.\Drivers\pcoin.h)(0x513FE226)
-I (API\../.\Drivers\mdb_uart.h)(0x55359DAA)
-I (API\../.\Drivers\board.h)(0x55359CB7)
+I (API\../.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (API\../.\Drivers\board.h)(0x5535B990)
 I (API\../.\API\logApi.h)(0x552F5BBE)
-F (.\Drivers\uart0.c)(0x552F7103)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\uart0.o --omf_browse .\hex\uart0.crf --depend .\hex\uart0.d)
-I (Drivers\..\config.h)(0x55359AF8)
+I (API\../.\API\bentoApi.h)(0x5535C7EB)
+F (.\API\bentoApi.c)(0x5535CECB)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\bentoapi.o --omf_browse .\hex\bentoapi.crf --depend .\hex\bentoapi.d)
+I (API\bentoApi.h)(0x5535C7EB)
+I (API\..\Drivers\board.h)(0x5535B990)
+I (API\..\config.h)(0x5535BD47)
+I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
+I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
+I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
+I (d:\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
+I (d:\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
+I (d:\Keil\ARM\ARMCC\include\setjmp.h)(0x51C7C554)
+I (d:\Keil\ARM\ARMCC\include\rt_misc.h)(0x51C7C554)
+I (d:\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
+I (API\..\.\firmware\firmware.h)(0x50134D44)
+I (API\..\.\firmware\..\uCOS_II\cpu\os_cpu.h)(0x4A6A6802)
+I (API\..\.\firmware\..\uCOS_II\os_cfg.h)(0x4A6A60F6)
+I (API\..\.\firmware\..\uCOS_II\uCOS_II.H)(0x3C51603C)
+I (API\..\.\firmware\lpc1700.h)(0x50EE56B8)
+I (API\..\.\firmware\target.h)(0x50E94AE0)
+I (API\..\.\firmware\zy_if.h)(0x50E94AE0)
+I (API\..\.\firmware\target_cfg.h)(0x50E94AE0)
+I (API\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
+I (API\..\.\Drivers\uart0.h)(0x53085506)
+I (API\..\.\Drivers\uart1.h)(0x5535CC7E)
+I (API\..\.\Drivers\uart3.h)(0x53BA340C)
+I (API\..\.\Drivers\buzzer.h)(0x50EFA54E)
+I (API\..\.\Drivers\i2c.h)(0x50E93BAE)
+I (API\..\.\Drivers\timer.h)(0x5535BB58)
+I (API\..\.\Drivers\key.h)(0x50F35B92)
+I (API\..\.\Drivers\pcoin.h)(0x513FE226)
+I (API\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (API\..\.\API\logApi.h)(0x552F5BBE)
+I (API\..\.\API\flashApi.h)(0x53B547BE)
+F (.\Drivers\uart0.c)(0x5535CE8A)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\uart0.o --omf_browse .\hex\uart0.crf --depend .\hex\uart0.d)
+I (Drivers\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -145,19 +181,20 @@ I (Drivers\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Drivers\..\.\Drivers\uart0.h)(0x53085506)
-I (Drivers\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Drivers\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Drivers\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Drivers\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Drivers\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Drivers\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Drivers\..\.\Drivers\timer.h)(0x5535BB58)
 I (Drivers\..\.\Drivers\key.h)(0x50F35B92)
 I (Drivers\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Drivers\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (Drivers\..\.\Drivers\board.h)(0x55359CB7)
+I (Drivers\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (Drivers\..\.\Drivers\board.h)(0x5535B990)
 I (Drivers\..\.\API\logApi.h)(0x552F5BBE)
 I (Drivers\..\.\API\flashApi.h)(0x53B547BE)
-F (.\Drivers\uart1.c)(0x50EA5DAA)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\uart1.o --omf_browse .\hex\uart1.crf --depend .\hex\uart1.d)
-I (Drivers\..\config.h)(0x55359AF8)
+I (Drivers\..\.\API\bentoApi.h)(0x5535C7EB)
+F (.\Drivers\uart1.c)(0x5535CC75)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\uart1.o --omf_browse .\hex\uart1.crf --depend .\hex\uart1.d)
+I (Drivers\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -176,19 +213,20 @@ I (Drivers\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Drivers\..\.\Drivers\uart0.h)(0x53085506)
-I (Drivers\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Drivers\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Drivers\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Drivers\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Drivers\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Drivers\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Drivers\..\.\Drivers\timer.h)(0x5535BB58)
 I (Drivers\..\.\Drivers\key.h)(0x50F35B92)
 I (Drivers\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Drivers\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (Drivers\..\.\Drivers\board.h)(0x55359CB7)
+I (Drivers\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (Drivers\..\.\Drivers\board.h)(0x5535B990)
 I (Drivers\..\.\API\logApi.h)(0x552F5BBE)
 I (Drivers\..\.\API\flashApi.h)(0x53B547BE)
+I (Drivers\..\.\API\bentoApi.h)(0x5535C7EB)
 F (.\Drivers\uart3.c)(0x53BA357A)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\uart3.o --omf_browse .\hex\uart3.crf --depend .\hex\uart3.d)
-I (Drivers\..\config.h)(0x55359AF8)
+I (Drivers\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -207,19 +245,20 @@ I (Drivers\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Drivers\..\.\Drivers\uart0.h)(0x53085506)
-I (Drivers\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Drivers\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Drivers\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Drivers\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Drivers\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Drivers\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Drivers\..\.\Drivers\timer.h)(0x5535BB58)
 I (Drivers\..\.\Drivers\key.h)(0x50F35B92)
 I (Drivers\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Drivers\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (Drivers\..\.\Drivers\board.h)(0x55359CB7)
+I (Drivers\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (Drivers\..\.\Drivers\board.h)(0x5535B990)
 I (Drivers\..\.\API\logApi.h)(0x552F5BBE)
 I (Drivers\..\.\API\flashApi.h)(0x53B547BE)
+I (Drivers\..\.\API\bentoApi.h)(0x5535C7EB)
 F (.\Drivers\buzzer.c)(0x50EF8428)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\buzzer.o --omf_browse .\hex\buzzer.crf --depend .\hex\buzzer.d)
-I (Drivers\..\config.h)(0x55359AF8)
+I (Drivers\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -238,19 +277,20 @@ I (Drivers\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Drivers\..\.\Drivers\uart0.h)(0x53085506)
-I (Drivers\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Drivers\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Drivers\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Drivers\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Drivers\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Drivers\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Drivers\..\.\Drivers\timer.h)(0x5535BB58)
 I (Drivers\..\.\Drivers\key.h)(0x50F35B92)
 I (Drivers\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Drivers\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (Drivers\..\.\Drivers\board.h)(0x55359CB7)
+I (Drivers\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (Drivers\..\.\Drivers\board.h)(0x5535B990)
 I (Drivers\..\.\API\logApi.h)(0x552F5BBE)
 I (Drivers\..\.\API\flashApi.h)(0x53B547BE)
+I (Drivers\..\.\API\bentoApi.h)(0x5535C7EB)
 F (.\Drivers\I2C.c)(0x53631F8A)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\i2c.o --omf_browse .\hex\i2c.crf --depend .\hex\i2c.d)
-I (Drivers\..\config.h)(0x55359AF8)
+I (Drivers\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -269,19 +309,20 @@ I (Drivers\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Drivers\..\.\Drivers\uart0.h)(0x53085506)
-I (Drivers\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Drivers\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Drivers\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Drivers\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Drivers\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Drivers\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Drivers\..\.\Drivers\timer.h)(0x5535BB58)
 I (Drivers\..\.\Drivers\key.h)(0x50F35B92)
 I (Drivers\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Drivers\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (Drivers\..\.\Drivers\board.h)(0x55359CB7)
+I (Drivers\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (Drivers\..\.\Drivers\board.h)(0x5535B990)
 I (Drivers\..\.\API\logApi.h)(0x552F5BBE)
 I (Drivers\..\.\API\flashApi.h)(0x53B547BE)
-F (.\Drivers\timer.c)(0x5535987B)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\timer.o --omf_browse .\hex\timer.crf --depend .\hex\timer.d)
-I (Drivers\..\config.h)(0x55359AF8)
+I (Drivers\..\.\API\bentoApi.h)(0x5535C7EB)
+F (.\Drivers\timer.c)(0x5535BB14)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\timer.o --omf_browse .\hex\timer.crf --depend .\hex\timer.d)
+I (Drivers\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -300,19 +341,20 @@ I (Drivers\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Drivers\..\.\Drivers\uart0.h)(0x53085506)
-I (Drivers\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Drivers\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Drivers\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Drivers\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Drivers\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Drivers\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Drivers\..\.\Drivers\timer.h)(0x5535BB58)
 I (Drivers\..\.\Drivers\key.h)(0x50F35B92)
 I (Drivers\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Drivers\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (Drivers\..\.\Drivers\board.h)(0x55359CB7)
+I (Drivers\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (Drivers\..\.\Drivers\board.h)(0x5535B990)
 I (Drivers\..\.\API\logApi.h)(0x552F5BBE)
 I (Drivers\..\.\API\flashApi.h)(0x53B547BE)
+I (Drivers\..\.\API\bentoApi.h)(0x5535C7EB)
 F (.\Drivers\key.c)(0x53203DB6)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\key.o --omf_browse .\hex\key.crf --depend .\hex\key.d)
-I (Drivers\..\config.h)(0x55359AF8)
+I (Drivers\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -331,19 +373,20 @@ I (Drivers\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Drivers\..\.\Drivers\uart0.h)(0x53085506)
-I (Drivers\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Drivers\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Drivers\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Drivers\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Drivers\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Drivers\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Drivers\..\.\Drivers\timer.h)(0x5535BB58)
 I (Drivers\..\.\Drivers\key.h)(0x50F35B92)
 I (Drivers\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Drivers\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (Drivers\..\.\Drivers\board.h)(0x55359CB7)
+I (Drivers\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (Drivers\..\.\Drivers\board.h)(0x5535B990)
 I (Drivers\..\.\API\logApi.h)(0x552F5BBE)
 I (Drivers\..\.\API\flashApi.h)(0x53B547BE)
+I (Drivers\..\.\API\bentoApi.h)(0x5535C7EB)
 F (.\Drivers\pcoin.c)(0x53B54BF2)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\pcoin.o --omf_browse .\hex\pcoin.crf --depend .\hex\pcoin.d)
-I (Drivers\..\config.h)(0x55359AF8)
+I (Drivers\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -362,21 +405,22 @@ I (Drivers\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Drivers\..\.\Drivers\uart0.h)(0x53085506)
-I (Drivers\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Drivers\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Drivers\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Drivers\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Drivers\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Drivers\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Drivers\..\.\Drivers\timer.h)(0x5535BB58)
 I (Drivers\..\.\Drivers\key.h)(0x50F35B92)
 I (Drivers\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Drivers\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (Drivers\..\.\Drivers\board.h)(0x55359CB7)
+I (Drivers\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (Drivers\..\.\Drivers\board.h)(0x5535B990)
 I (Drivers\..\.\API\logApi.h)(0x552F5BBE)
 I (Drivers\..\.\API\flashApi.h)(0x53B547BE)
-F (.\Drivers\mdb_uart.c)(0x55359E54)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\mdb_uart.o --omf_browse .\hex\mdb_uart.crf --depend .\hex\mdb_uart.d)
-I (Drivers\mdb_uart.h)(0x55359DAA)
-I (Drivers\board.h)(0x55359CB7)
-I (Drivers\..\config.h)(0x55359AF8)
+I (Drivers\..\.\API\bentoApi.h)(0x5535C7EB)
+F (.\Drivers\mdb_uart.c)(0x5535B256)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\mdb_uart.o --omf_browse .\hex\mdb_uart.crf --depend .\hex\mdb_uart.d)
+I (Drivers\mdb_uart.h)(0x5535AA9A)
+I (Drivers\board.h)(0x5535B990)
+I (Drivers\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -395,18 +439,19 @@ I (Drivers\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Drivers\..\.\Drivers\uart0.h)(0x53085506)
-I (Drivers\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Drivers\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Drivers\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Drivers\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Drivers\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Drivers\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Drivers\..\.\Drivers\timer.h)(0x5535BB58)
 I (Drivers\..\.\Drivers\key.h)(0x50F35B92)
 I (Drivers\..\.\Drivers\pcoin.h)(0x513FE226)
 I (Drivers\..\.\API\logApi.h)(0x552F5BBE)
 I (Drivers\..\.\API\flashApi.h)(0x53B547BE)
-F (.\Drivers\board.c)(0x55359CAE)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\board.o --omf_browse .\hex\board.crf --depend .\hex\board.d)
-I (Drivers\board.h)(0x55359CB7)
-I (Drivers\..\config.h)(0x55359AF8)
+I (Drivers\..\.\API\bentoApi.h)(0x5535C7EB)
+F (.\Drivers\board.c)(0x5535B9DA)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\board.o --omf_browse .\hex\board.crf --depend .\hex\board.d)
+I (Drivers\board.h)(0x5535B990)
+I (Drivers\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -425,18 +470,19 @@ I (Drivers\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Drivers\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Drivers\..\.\Drivers\uart0.h)(0x53085506)
-I (Drivers\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Drivers\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Drivers\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Drivers\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Drivers\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Drivers\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Drivers\..\.\Drivers\timer.h)(0x5535BB58)
 I (Drivers\..\.\Drivers\key.h)(0x50F35B92)
 I (Drivers\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Drivers\..\.\Drivers\mdb_uart.h)(0x55359DAA)
+I (Drivers\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
 I (Drivers\..\.\API\logApi.h)(0x552F5BBE)
 I (Drivers\..\.\API\flashApi.h)(0x53B547BE)
+I (Drivers\..\.\API\bentoApi.h)(0x5535C7EB)
 F (.\Firmware\LPC1700PinCfg.c)(0x5212F0B0)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\lpc1700pincfg.o --omf_browse .\hex\lpc1700pincfg.crf --depend .\hex\lpc1700pincfg.d)
-I (Firmware\..\config.h)(0x55359AF8)
+I (Firmware\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -455,19 +501,20 @@ I (Firmware\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Firmware\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Firmware\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Firmware\..\.\Drivers\uart0.h)(0x53085506)
-I (Firmware\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Firmware\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Firmware\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Firmware\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Firmware\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Firmware\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Firmware\..\.\Drivers\timer.h)(0x5535BB58)
 I (Firmware\..\.\Drivers\key.h)(0x50F35B92)
 I (Firmware\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Firmware\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (Firmware\..\.\Drivers\board.h)(0x55359CB7)
+I (Firmware\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (Firmware\..\.\Drivers\board.h)(0x5535B990)
 I (Firmware\..\.\API\logApi.h)(0x552F5BBE)
 I (Firmware\..\.\API\flashApi.h)(0x53B547BE)
+I (Firmware\..\.\API\bentoApi.h)(0x5535C7EB)
 F (.\Firmware\target.c)(0x50E949EE)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\target.o --omf_browse .\hex\target.crf --depend .\hex\target.d)
-I (Firmware\..\config.h)(0x55359AF8)
+I (Firmware\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -486,19 +533,20 @@ I (Firmware\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Firmware\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Firmware\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Firmware\..\.\Drivers\uart0.h)(0x53085506)
-I (Firmware\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Firmware\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Firmware\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Firmware\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Firmware\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Firmware\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Firmware\..\.\Drivers\timer.h)(0x5535BB58)
 I (Firmware\..\.\Drivers\key.h)(0x50F35B92)
 I (Firmware\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Firmware\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (Firmware\..\.\Drivers\board.h)(0x55359CB7)
+I (Firmware\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (Firmware\..\.\Drivers\board.h)(0x5535B990)
 I (Firmware\..\.\API\logApi.h)(0x552F5BBE)
 I (Firmware\..\.\API\flashApi.h)(0x53B547BE)
+I (Firmware\..\.\API\bentoApi.h)(0x5535C7EB)
 F (.\Firmware\vector_table.c)(0x50E94A26)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\vector_table.o --omf_browse .\hex\vector_table.crf --depend .\hex\vector_table.d)
-I (Firmware\..\config.h)(0x55359AF8)
+I (Firmware\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -517,20 +565,21 @@ I (Firmware\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Firmware\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Firmware\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Firmware\..\.\Drivers\uart0.h)(0x53085506)
-I (Firmware\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Firmware\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Firmware\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Firmware\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Firmware\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Firmware\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Firmware\..\.\Drivers\timer.h)(0x5535BB58)
 I (Firmware\..\.\Drivers\key.h)(0x50F35B92)
 I (Firmware\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Firmware\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (Firmware\..\.\Drivers\board.h)(0x55359CB7)
+I (Firmware\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (Firmware\..\.\Drivers\board.h)(0x5535B990)
 I (Firmware\..\.\API\logApi.h)(0x552F5BBE)
 I (Firmware\..\.\API\flashApi.h)(0x53B547BE)
+I (Firmware\..\.\API\bentoApi.h)(0x5535C7EB)
 I (Firmware\vector_cfg.h)(0x50EF6DF6)
 F (.\Firmware\zy_if.c)(0x50E94A9E)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\zy_if.o --omf_browse .\hex\zy_if.crf --depend .\hex\zy_if.d)
-I (Firmware\..\config.h)(0x55359AF8)
+I (Firmware\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -549,20 +598,21 @@ I (Firmware\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Firmware\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Firmware\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Firmware\..\.\Drivers\uart0.h)(0x53085506)
-I (Firmware\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Firmware\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Firmware\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Firmware\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Firmware\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Firmware\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Firmware\..\.\Drivers\timer.h)(0x5535BB58)
 I (Firmware\..\.\Drivers\key.h)(0x50F35B92)
 I (Firmware\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Firmware\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (Firmware\..\.\Drivers\board.h)(0x55359CB7)
+I (Firmware\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (Firmware\..\.\Drivers\board.h)(0x5535B990)
 I (Firmware\..\.\API\logApi.h)(0x552F5BBE)
 I (Firmware\..\.\API\flashApi.h)(0x53B547BE)
+I (Firmware\..\.\API\bentoApi.h)(0x5535C7EB)
 I (Firmware\zy_if_cfg.h)(0x4A80D4CE)
 F (.\Startup\rt_sys_c.c)(0x50E154BE)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\rt_sys_c.o --omf_browse .\hex\rt_sys_c.crf --depend .\hex\rt_sys_c.d)
-I (Startup\..\config.h)(0x55359AF8)
+I (Startup\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -581,22 +631,23 @@ I (Startup\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (Startup\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (Startup\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (Startup\..\.\Drivers\uart0.h)(0x53085506)
-I (Startup\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (Startup\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (Startup\..\.\Drivers\uart3.h)(0x53BA340C)
 I (Startup\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (Startup\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (Startup\..\.\Drivers\timer.h)(0x50EA31C2)
+I (Startup\..\.\Drivers\timer.h)(0x5535BB58)
 I (Startup\..\.\Drivers\key.h)(0x50F35B92)
 I (Startup\..\.\Drivers\pcoin.h)(0x513FE226)
-I (Startup\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (Startup\..\.\Drivers\board.h)(0x55359CB7)
+I (Startup\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (Startup\..\.\Drivers\board.h)(0x5535B990)
 I (Startup\..\.\API\logApi.h)(0x552F5BBE)
 I (Startup\..\.\API\flashApi.h)(0x53B547BE)
+I (Startup\..\.\API\bentoApi.h)(0x5535C7EB)
 I (d:\Keil\ARM\ARMCC\include\rt_sys.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\time.h)(0x51C7C554)
 F (.\Startup\rt_sys_s.s)(0x4A6911BE)(--cpu Cortex-M3 -g --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx--list .\hex\rt_sys_s.lst --xref -o .\hex\rt_sys_s.o --depend .\hex\rt_sys_s.d)
 F (.\uCOS_II\cpu\Os_cpu_c.c)(0x50134DBC)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\os_cpu_c.o --omf_browse .\hex\os_cpu_c.crf --depend .\hex\os_cpu_c.d)
-I (uCOS_II\cpu\..\..\config.h)(0x55359AF8)
+I (uCOS_II\cpu\..\..\config.h)(0x5535BD47)
 I (d:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (d:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
@@ -615,17 +666,18 @@ I (uCOS_II\cpu\..\..\.\firmware\zy_if.h)(0x50E94AE0)
 I (uCOS_II\cpu\..\..\.\firmware\target_cfg.h)(0x50E94AE0)
 I (uCOS_II\cpu\..\..\.\firmware\LPC1700PinCfg.h)(0x5212F0B0)
 I (uCOS_II\cpu\..\..\.\Drivers\uart0.h)(0x53085506)
-I (uCOS_II\cpu\..\..\.\Drivers\uart1.h)(0x50EFA54E)
+I (uCOS_II\cpu\..\..\.\Drivers\uart1.h)(0x5535CC7E)
 I (uCOS_II\cpu\..\..\.\Drivers\uart3.h)(0x53BA340C)
 I (uCOS_II\cpu\..\..\.\Drivers\buzzer.h)(0x50EFA54E)
 I (uCOS_II\cpu\..\..\.\Drivers\i2c.h)(0x50E93BAE)
-I (uCOS_II\cpu\..\..\.\Drivers\timer.h)(0x50EA31C2)
+I (uCOS_II\cpu\..\..\.\Drivers\timer.h)(0x5535BB58)
 I (uCOS_II\cpu\..\..\.\Drivers\key.h)(0x50F35B92)
 I (uCOS_II\cpu\..\..\.\Drivers\pcoin.h)(0x513FE226)
-I (uCOS_II\cpu\..\..\.\Drivers\mdb_uart.h)(0x55359DAA)
-I (uCOS_II\cpu\..\..\.\Drivers\board.h)(0x55359CB7)
+I (uCOS_II\cpu\..\..\.\Drivers\mdb_uart.h)(0x5535AA9A)
+I (uCOS_II\cpu\..\..\.\Drivers\board.h)(0x5535B990)
 I (uCOS_II\cpu\..\..\.\API\logApi.h)(0x552F5BBE)
 I (uCOS_II\cpu\..\..\.\API\flashApi.h)(0x53B547BE)
+I (uCOS_II\cpu\..\..\.\API\bentoApi.h)(0x5535C7EB)
 F (.\uCOS_II\hook\uCOS-II hook.lib)(0x4A6A5E80)()
 F (.\uCOS_II\OS_CORE.C)(0x50EA31F2)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I d:\Keil\ARM\RV31\INC-I d:\Keil\ARM\CMSIS\Include-I d:\Keil\ARM\Inc\NXP\LPC17xx-o .\hex\os_core.o --omf_browse .\hex\os_core.crf --depend .\hex\os_core.d)
 I (uCOS_II\includes.h)(0x50135012)

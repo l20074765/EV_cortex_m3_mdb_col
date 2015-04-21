@@ -66,7 +66,7 @@ extern "C" {
 
 #include ".\API\logApi.h"
 #include ".\API\flashApi.h"
-
+#include ".\API\bentoApi.h"
 
 #ifdef __cplusplus
 	}

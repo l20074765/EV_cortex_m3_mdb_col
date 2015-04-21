@@ -430,6 +430,11 @@
               <FileType>1</FileType>
               <FilePath>.\API\flashApi.c</FilePath>
             </File>
+            <File>
+              <FileName>bentoApi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\API\bentoApi.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

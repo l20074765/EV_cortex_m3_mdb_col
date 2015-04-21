@@ -26,6 +26,6 @@ void Uart1PutChar(unsigned char ch);
 void Uart1PutStr(unsigned char const *Str, unsigned int Len);
 unsigned char Uart1BuffIsNotEmpty(void);
 unsigned char Uart1GetCh(void);
-
+void uart1ClrBuf(void) ;
 #endif
 /**************************************End Of File*******************************************************/
