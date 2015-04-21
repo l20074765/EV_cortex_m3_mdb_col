@@ -93,20 +93,33 @@
 #define MDB_COL_ERROR		5
 #define MDB_COL_JUSTRESET	6
 
-typedef struct _col_column_{
+
+
+#define COL_BIT_COOL	(0x01U << 0)
+#define COL_BIT_LIGHT	(0x01U << 1)
+#define COL_BIT_HOT		(0x01U << 3)
+
+
+
+typedef struct _st_column_{
 	uint8 empty;
-}COL_COLUMN;
+}ST_COLUMN;
 
 
-
-typedef struct _mdb_col_{
-	uint8 status;
+typedef struct _st_bin_{
+	uint8 ishot;
+	uint8 iscool;
+	uint8 islight;
+	uint8 isemptyCtrl;
 	uint8 sum;
-	uint8 sensorFault;
 	uint8 coolTemp;
 	uint8 hotTemp;
-	COL_COLUMN col[80];
-}MDB_COL;
+	uint8 sensorFault;
+	uint8 id[20];
+	uint8 id_len;
+	uint8 type;
+	ST_COLUMN col[120];
+}ST_BIN;
 
 
 
@@ -114,10 +127,10 @@ typedef struct _mdb_col_{
 /*********************************************************************************************************
 ** MDB通信消息队列
 *********************************************************************************************************/
-#define G_MDB_SIZE    5
+#define G_MDB_SIZE    10
 typedef struct _g_mdb_st_{
 	uint8 type;
-	MDB_COL *col;
+	ST_BIN *bin;
 	uint8 column;
 	uint8 ctrl;
 	int8 coolTemp;
@@ -155,7 +168,7 @@ unsigned char MDB_colAddrIsOk(unsigned char addr);
 unsigned char MDB_recvOk(unsigned char len);
 void MDB_analysis(void);
 void MDB_setColStatus(uint8 type);
-
+void MDB_recv_ack(uint8 cmd);
 
 #endif
 

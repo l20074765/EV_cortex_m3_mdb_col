@@ -75,16 +75,30 @@ static void DEV_mdbCtrl(G_MDB_ST *g_mdb_st)
 	MDB_setColStatus(MDB_COL_SUCCESS);	
 }
 
+
+static void DEV_mdbReset(G_MDB_ST *g_mdb_st)
+{
+	uint8 res;
+	res = EV_bento_check(1,g_mdb_st->bin);
+	if(res == 1){
+		MDB_setColStatus(MDB_COL_JUSTRESET);
+	}
+	else{
+		MDB_setColStatus(MDB_COL_ERROR);
+	}
+	
+}
+
 void DEV_taskPoll(void)
 {
 	G_MDB_ST *g_mdb_st;
 	INT8U err;
-	g_mdb_st = OSQPend (g_mdb_event, 5, &err);
+	g_mdb_st = OSQPend (g_mdb_event, 20, &err);
 	if(err == OS_NO_ERR){
 		print_dev("OSQPend:type= %d\r\n",g_mdb_st->type);
 		switch(g_mdb_st->type){
 			case G_MDB_RESET:
-				MDB_setColStatus(MDB_COL_JUSTRESET);
+				DEV_mdbReset(g_mdb_st);
 				break;
 			case G_MDB_SWITCH:
 				DEV_mdbSwitch(g_mdb_st);
@@ -107,7 +121,7 @@ void DEV_task(void *pdata)
 	CreateMBox();
 	while(1){
 		DEV_taskPoll();
-		msleep(100);
+		msleep(10);
 	}
 }
 

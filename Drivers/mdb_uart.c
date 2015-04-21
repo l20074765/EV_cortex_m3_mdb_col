@@ -19,7 +19,6 @@
 #define MDB_BUF_SIZE	36
 
 static volatile unsigned char  recvbuf[MDB_BUF_SIZE];
-static unsigned char  sendbuf[MDB_BUF_SIZE];
 static volatile unsigned char  rx;
 static volatile unsigned char  tx;
 static volatile unsigned char  crc;
@@ -34,7 +33,8 @@ static volatile unsigned char  mdb_status = MDB_DEV_IDLE;
 static volatile unsigned char mdb_addr = 0;
 static volatile unsigned char mdb_cmd = 0;
 
-MDB_COL stCol;
+static volatile uint8 mdb_col_status = MDB_COL_IDLE;
+ST_BIN stBin;
 
 
 /*********************************************************************************************************
@@ -63,7 +63,7 @@ void MDB_createMbox(void)
 void MDB_mboxSend(uint8 type)
 {
 	g_mdb_st[g_mdb_in].type = type;
-	g_mdb_st[g_mdb_in].col = &stCol;
+	g_mdb_st[g_mdb_in].bin = &stBin;
 	OSQPost(g_mdb_event,&g_mdb_st[g_mdb_in]);
 	g_mdb_in = (g_mdb_in + 1) % G_MDB_SIZE;
 }
@@ -169,8 +169,7 @@ void MDB_putChr(unsigned char dat,unsigned char mode)
 		case MDB_ADD:	uart2SetParityMode(PARITY_F_1); // 强制1校验 发送MDB地址
 						Uart2PutCh(dat);
 						break;
-		default	:		
-						uart2SetParityMode(PARITY_DIS);
+		default	:		uart2SetParityMode(PARITY_DIS);
 						Uart2PutCh(dat);
 						break;
 	}
@@ -247,11 +246,15 @@ void Uart2IsrHandler(void)
 			mdb_status = MDB_DEV_IDLE;
 			if(udata == MDB_ACK){ //收到主机的ACK 至此确定主机收到从机的数据包
 				mdb_status = MDB_DEV_IDLE;
+				MDB_recv_ack(mdb_cmd);
 			}
 		}
 	}
     OSIntExit();
 }
+
+
+
 
 
 
@@ -288,10 +291,24 @@ unsigned char MDB_recvOk(unsigned char len)
 }
 
 
+void MDB_recv_ack(uint8 cmd)
+{
+	cmd = cmd;
+	#if 0
+	if(cmd == POLL){
+		if(mdb_col_status != MDB_COL_BUSY && 
+			mdb_col_status != MDB_COL_IDLE){
+			mdb_col_status = MDB_COL_IDLE;
+		}
+	}
+	#endif
+}
+
+
 uint8 MDB_send(uint8 *data,uint8 len)
 {
-	uint8 i,crc = 0;
-	OSIntEnter();
+	uint8 i,crc = 0; 
+	//OSIntEnter(); //此函数已在中断中运行 中断已经关闭了
 	if(len == 0){
 		MDB_putChr(MDB_ACK,MDB_ADD);
 	}
@@ -301,36 +318,37 @@ uint8 MDB_send(uint8 *data,uint8 len)
 			crc += data[i];
 		}
 		MDB_putChr(crc,MDB_ADD);
-		//MDB_putChr(MDB_ACK,MDB_ADD);
 	}
 	uart2SetParityMode(PARITY_F_0);
-	OSIntExit();
-	
+	//OSIntExit();
 	return 1;	
 }
 
 
+
+
+
+
 void MDB_setColStatus(uint8 type)
 {
-	stCol.status = type;
+	OSIntEnter();
+	mdb_col_status = type;
+	OSIntExit();
 }
 
 
 static void MDB_poll_rpt(void)
 {
-	unsigned char temp;
-	temp = stCol.status;
-	sendbuf[0] = temp;
-	MDB_send(sendbuf,1);
-	if(temp != MDB_COL_BUSY){
-		MDB_setColStatus(MDB_COL_IDLE);
-	}
+	uint8 buf[2] = {0};
+	buf[0] = mdb_col_status;
+	MDB_send(buf,1);
 }
 
 static void MDB_reset_rpt(void)
 {
-	MDB_setColStatus(MDB_COL_BUSY);
 	MDB_send(NULL,0);
+	memset(&stBin,0,sizeof(stBin));
+	mdb_col_status = MDB_COL_BUSY;
 	MDB_mboxSend(G_MDB_RESET);
 }
 
@@ -339,8 +357,8 @@ static void MDB_switch_rpt(void)
 {
 	uint8 column;
 	column = recvbuf[1];
-	MDB_setColStatus(MDB_COL_BUSY);
 	MDB_send(NULL,0);
+	mdb_col_status = MDB_COL_BUSY;
 	g_mdb_st[g_mdb_in].column = column;
 	MDB_mboxSend(G_MDB_SWITCH);
 }
@@ -352,55 +370,55 @@ static void MDB_ctrl_rpt(void)
 	g_mdb_st[g_mdb_in].hotTemp  = (int8)recvbuf[3];
 	
 	MDB_send(NULL,0);
-	MDB_setColStatus(MDB_COL_BUSY);
+	mdb_col_status = MDB_COL_BUSY;
 	MDB_mboxSend(G_MDB_CTRL);
 }
 
 static void MDB_column_rpt(void)
 {
 	uint8 index = 0,i,j,temp,colindex = 0;
-	
-	stCol.sum = 64;
-	for(i = 0;i < (stCol.sum / 8);i++){
+	uint8 buf[36] = {0};
+	stBin.sum = 64;
+	for(i = 0;i < (stBin.sum / 8);i++){
 		temp = 0;
 		for(j = 0;j < 8;j++){
-			if(stCol.col[colindex++].empty == 1){
+			if(stBin.col[colindex++].empty == 1){
 				temp |= (0x01 << j);
 			}
 		}
-		sendbuf[index++] = temp;
+		buf[index++] = temp;
 	}
 	
-	if(stCol.sum % 8){
+	if(stBin.sum % 8){
 		temp = 0;
-		for(j = 0;j < (stCol.sum % 8);j++){
-			if(stCol.col[colindex++].empty == 1){
+		for(j = 0;j < (stBin.sum % 8);j++){
+			if(stBin.col[colindex++].empty == 1){
 				temp |= (0x01 << j);
 			}
 		}
-		sendbuf[index++] = temp;
+		buf[index++] = temp;
 	}
-	sendbuf[index++] = stCol.sum;
-	sendbuf[index++] = stCol.sensorFault;
-	sendbuf[index++] = stCol.coolTemp;
-	sendbuf[index++] = stCol.hotTemp;	
-	MDB_send(sendbuf,index);
+	buf[index++] = stBin.sum;
+	buf[index++] = stBin.sensorFault & 0x01;
+	buf[index++] = stBin.coolTemp;
+	buf[index++] = stBin.hotTemp;	
+	MDB_send(buf,index);
 	
 }
 
 
 static void MDB_status_rpt(void)
 {
-	uint8 index = 0;
-	sendbuf[index++] = 0x12;
-	sendbuf[index++] = 0x34;
-	sendbuf[index++] = 64;
-	sendbuf[index++] = 0;//reserved
-	sendbuf[index++] = 0;//reserved
-	sendbuf[index++] = 0x00;//feature
-	sendbuf[index++] = 0;//reserved
-	sendbuf[index++] = 0;//reserved
-	MDB_send(sendbuf,index);
+	uint8 index = 0,buf[16] = {0};
+	buf[index++] = 0x12;
+	buf[index++] = 0x34;
+	buf[index++] = stBin.sum;
+	buf[index++] = 0;//reserved
+	buf[index++] = 0;//reserved
+	buf[index++] = (0x00 << 3) | (stBin.ishot << 1) | (stBin.iscool << 0);//feature
+	buf[index++] = 0;//reserved
+	buf[index++] = 0;//reserved
+	MDB_send(buf,index);
 }
 
 void MDB_analysis(void)
