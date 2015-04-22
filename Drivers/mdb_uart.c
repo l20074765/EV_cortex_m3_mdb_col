@@ -18,10 +18,10 @@
 
 #define MDB_BUF_SIZE	36
 
-static volatile unsigned char  recvbuf[MDB_BUF_SIZE];
-static volatile unsigned char  rx;
-static volatile unsigned char  tx;
-static volatile unsigned char  crc;
+static volatile uint8  recvbuf[MDB_BUF_SIZE];
+static volatile uint8  rx;
+static volatile uint8  tx;
+static volatile uint8  crc;
 
 
 #define MDB_DEV_IDLE			0
