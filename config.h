@@ -49,7 +49,6 @@ extern "C" {
 #include ".\Drivers\i2c.h"
 #include ".\Drivers\timer.h"
 #include ".\Drivers\key.h"
-#include ".\Drivers\pcoin.h"
 #include ".\Drivers\mdb_uart.h"
 #include ".\Drivers\board.h"
 

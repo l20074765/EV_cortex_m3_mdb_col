@@ -16,6 +16,15 @@
 #include "mdb_uart.h"
 #include "..\config.h"
 
+//#define MDB_DEBUG
+#ifdef MDB_DEBUG
+#define print_mdb(...)	Trace(__VA_ARGS__)
+#else
+#define print_mdb(...)
+#endif
+
+
+
 #define MDB_BUF_SIZE	36
 
 static volatile uint8  recvbuf[MDB_BUF_SIZE];
@@ -29,60 +38,63 @@ static volatile uint8  crc;
 #define MDB_DEV_RECV_ACK		2
 
 
-static volatile unsigned char  mdb_status = MDB_DEV_IDLE;
-static volatile unsigned char mdb_addr = 0;
-static volatile unsigned char mdb_cmd = 0;
+static volatile uint8 mdb_status = MDB_DEV_IDLE;
+static volatile uint8 mdb_addr = 0;
+static volatile uint8 mdb_cmd = 0;
 
-static volatile uint8 mdb_col_status = MDB_COL_IDLE;
 ST_BIN stBin;
 
 
 
 /*********************************************************************************************************
-** MDB通信消息队列
+** MDB通信
 *********************************************************************************************************/
-static uint8 g_mdb_in	= 	0;
-OS_EVENT *g_mdb_event; //定义MDB事件
-G_MDB_ST  g_mdb_st[G_MDB_SIZE];//定义MDB消息结构体
-void *g_mdb[G_MDB_SIZE]; //定义MDB消息数组指针
+volatile uint8 mdb_req = 0;
+ST_MDB stMdb;
+
+
+
 
 
 /*********************************************************************************************************
-** Function name:     	MDB_createMbox
-** Descriptions:	    创建MDB通信邮箱
+** Function name:     	MDB_getReqStatus
+** Descriptions:	    查询MDB请求状态
+** input parameters:    无
+** output parameters:   无
+** Returned value:      0 无请求 1正在处理请求 2处理完成
+*********************************************************************************************************/
+uint8 MDB_getRequest(void)
+{
+	return mdb_req;
+}
+
+/*********************************************************************************************************
+** Function name:     	MDB_SetRequest
+** Descriptions:	    设置MDB请求
 ** input parameters:    无
 ** output parameters:   无
 ** Returned value:      无
 *********************************************************************************************************/
-void MDB_createMbox(void)
+void MDB_setRequest(uint8 req)
 {
-	g_mdb_event = OSQCreate(&g_mdb[0],G_MDB_SIZE);
+	mdb_req = req;
 }
 
 
 
-void MDB_mboxSend(uint8 type)
-{
-	g_mdb_st[g_mdb_in].type = type;
-	g_mdb_st[g_mdb_in].bin = &stBin;
-	OSQPost(g_mdb_event,&g_mdb_st[g_mdb_in]);
-	g_mdb_in = (g_mdb_in + 1) % G_MDB_SIZE;
-}
+
+
 
 
 
 
 static void MDB_recv_ack(uint8 cmd)
 {
-	cmd = cmd;
-	#if 0
 	if(cmd == POLL){
-		if(mdb_col_status != MDB_COL_BUSY && 
-			mdb_col_status != MDB_COL_IDLE){
-			mdb_col_status = MDB_COL_IDLE;
+		if(MDB_getRequest() == MDB_REQ_FINISH){
+			MDB_setRequest(MDB_REQ_IDLE);
 		}
 	}
-	#endif
 }
 
 
@@ -306,7 +318,10 @@ unsigned char MDB_recvOk(unsigned char len)
 }
 
 
-
+void MDB_sendNAK(void)
+{
+	MDB_putChr(MDB_NAK,MDB_ADD);
+}
 
 
 uint8 MDB_send(uint8 *data,uint8 len)
@@ -333,50 +348,68 @@ uint8 MDB_send(uint8 *data,uint8 len)
 
 
 
-void MDB_setColStatus(uint8 type)
-{
-	OSIntEnter();
-	mdb_col_status = type;
-	OSIntExit();
-}
-
-
 static void MDB_poll_rpt(void)
 {
-	uint8 buf[2] = {0};
-	buf[0] = mdb_col_status;
-	MDB_send(buf,1);
+	uint8 s = MDB_COL_IDLE;
+	switch(mdb_req){
+		case MDB_REQ_HANDLE:
+			s = MDB_COL_BUSY;
+			break;
+		case MDB_REQ_FINISH:
+			s = stMdb.result;
+			break;
+		default:break;
+	}
+	MDB_send(&s,1);
 }
 
 static void MDB_reset_rpt(void)
 {
-	MDB_send(NULL,0);
-	memset(&stBin,0,sizeof(stBin));
-	mdb_col_status = MDB_COL_BUSY;
-	MDB_mboxSend(G_MDB_RESET);
+	if(MDB_getRequest() == MDB_REQ_HANDLE){
+		MDB_sendNAK();
+	}
+	else{
+		MDB_send(NULL,0);
+		memset(&stBin,0,sizeof(stBin));
+		stMdb.bin = &stBin;
+		stMdb.type = G_MDB_RESET;
+		MDB_setRequest(MDB_REQ_HANDLE);
+	}
 }
 
 
 static void MDB_switch_rpt(void)
 {
 	uint8 column;
-	column = recvbuf[1];
-	MDB_send(NULL,0);
-	mdb_col_status = MDB_COL_BUSY;
-	g_mdb_st[g_mdb_in].column = column;
-	MDB_mboxSend(G_MDB_SWITCH);
+	if(MDB_getRequest() == MDB_REQ_HANDLE){
+		MDB_sendNAK();
+	}
+	else{
+		column = recvbuf[1];
+		MDB_send(NULL,0);
+		stMdb.type = G_MDB_SWITCH;
+		stMdb.column = column;
+		MDB_setRequest(MDB_REQ_HANDLE);
+	}
+	
 }
 
 static void MDB_ctrl_rpt(void)
 {
-	MDB_send(NULL,0);
-	mdb_col_status = MDB_COL_BUSY;
-	g_mdb_st[g_mdb_in].coolCtrl = recvbuf[1] & 0x01;
-	g_mdb_st[g_mdb_in].lightCtrl = (recvbuf[1] >> 1) & 0x01;
-	g_mdb_st[g_mdb_in].hotCtrl = (recvbuf[1] >> 2) & 0x01;
-	g_mdb_st[g_mdb_in].coolTemp = (int8)recvbuf[2];
-	g_mdb_st[g_mdb_in].hotTemp  = (int8)recvbuf[3];
-	MDB_mboxSend(G_MDB_CTRL);
+	if(MDB_getRequest() == MDB_REQ_HANDLE){
+		MDB_sendNAK();
+	}
+	else{
+		MDB_send(NULL,0);
+		stMdb.type = G_MDB_CTRL;
+		stMdb.coolCtrl = recvbuf[1] & 0x01;
+		stMdb.lightCtrl = (recvbuf[1] >> 1) & 0x01;
+		stMdb.hotCtrl = (recvbuf[1] >> 2) & 0x01;
+		stMdb.coolTemp = (int8)recvbuf[2];
+		stMdb.hotTemp  = (int8)recvbuf[3];
+		MDB_setRequest(MDB_REQ_HANDLE);	
+	}
+	
 }
 
 static void MDB_column_rpt(void)

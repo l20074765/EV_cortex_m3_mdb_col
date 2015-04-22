@@ -15,7 +15,7 @@
 #include "..\config.h"
 #include <stdarg.h>
 
-//#define	_DEBUG_TRACE
+#define	_DEBUG_TRACE
 
 
 #define	UART0_BPS			9600

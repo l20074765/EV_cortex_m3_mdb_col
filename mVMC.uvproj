@@ -476,11 +476,6 @@
               <FilePath>.\Drivers\key.c</FilePath>
             </File>
             <File>
-              <FileName>pcoin.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Drivers\pcoin.c</FilePath>
-            </File>
-            <File>
               <FileName>mdb_uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Drivers\mdb_uart.c</FilePath>

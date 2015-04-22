@@ -6,7 +6,7 @@ typedef unsigned char (*FUN_uartGetCh)(void);
 typedef void (*FUN_uartClear)(void);
 typedef void (*FUN_uartPutStr)(unsigned char const *Str, unsigned int Len);
 
-#if 0
+#if 1
 static FUN_uartIsNotEmpty uartIsNotEmpty = Uart3BuffIsNotEmpty;
 static FUN_uartGetCh uartGetCh = Uart3GetCh;
 static FUN_uartClear uartClear = uart3_clr_buf;
@@ -17,6 +17,19 @@ static FUN_uartGetCh uartGetCh = Uart0GetCh;
 static FUN_uartClear uartClear = ClrUart0Buff;
 static FUN_uartPutStr uartPutStr = Uart0PutStr;
 #endif
+
+
+//#define BENTO_DEBUG
+#ifdef BENTO_DEBUG
+#define print_bento(...)	Trace(__VA_ARGS__)
+#else
+#define print_bento(...)
+#endif
+
+
+
+
+
 uint8 BT_recv(uint8 *rdata,uint8 *rlen)
 {
     uint8 index = 0,len = 0,ch;
@@ -25,7 +38,7 @@ uint8 BT_recv(uint8 *rdata,uint8 *rlen)
     if(rdata == NULL){
 		return 0;
 	}   
-	Timer.bentoTimeout = 100;
+	Timer.bentoTimeout = 200;
     while(Timer.bentoTimeout){ 
 		if(uartIsNotEmpty()){
 			ch = uartGetCh();	

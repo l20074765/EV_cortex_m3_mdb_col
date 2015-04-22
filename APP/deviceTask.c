@@ -1,7 +1,7 @@
 #include "deviceTask.h"
 #include "..\config.h"
 
-#define DEV_DEBUG
+//#define DEV_DEBUG
 #ifdef DEV_DEBUG
 #define print_dev(...)	Trace(__VA_ARGS__)
 #else
@@ -28,8 +28,6 @@ void CreateMBox(void)
 {
 	//创建按键邮箱
 	g_KeyMsg = OSQCreate(&KeyMsgArray[0],2);
-	MDB_createMbox();
-
 }
 
 /*********************************************************************************************************
@@ -53,66 +51,61 @@ void SystemInit()
 
 
 
-
-static void DEV_mdbSwitch(G_MDB_ST *g_mdb_st)
+//出货 
+static void DEV_mdbSwitch(ST_MDB *mdb)
 {
-	//出货 
 	uint8 res;
-	res = BT_open(1,g_mdb_st->column);
+	res = BT_open(1,mdb->column);
 	if(res == 1){
-		MDB_setColStatus(MDB_COL_SUCCESS);
+		stMdb.result = MDB_COL_SUCCESS;
 	}
 	else{
-		MDB_setColStatus(MDB_COL_FAILED);
+		stMdb.result = MDB_COL_FAILED;
 	}
-	
-	
+	MDB_setRequest(MDB_REQ_FINISH);
 }
 
-static void DEV_mdbCtrl(G_MDB_ST *g_mdb_st)
+static void DEV_mdbCtrl(ST_MDB *mdb)
 {
 	uint8 res;
-	
-	res = EV_bento_light(1,g_mdb_st->lightCtrl);
+	res = EV_bento_light(1,mdb->lightCtrl);
 	if(res == 1){
-		MDB_setColStatus(MDB_COL_IDLE);	
+		stMdb.result = MDB_COL_IDLE;
 	}
 	else{
-		MDB_setColStatus(MDB_COL_ERROR);	
+		stMdb.result = MDB_COL_ERROR;
 	}
-	
+	MDB_setRequest(MDB_REQ_FINISH);
 }
 
 
-static void DEV_mdbReset(G_MDB_ST *g_mdb_st)
+static void DEV_mdbReset(ST_MDB *mdb)
 {
 	uint8 res;
-	res = EV_bento_check(1,g_mdb_st->bin);
+	res = EV_bento_check(1,mdb->bin);
 	if(res == 1){
-		MDB_setColStatus(MDB_COL_JUSTRESET);
+		stMdb.result = MDB_COL_JUSTRESET;
 	}
 	else{
-		MDB_setColStatus(MDB_COL_ERROR);
+		stMdb.result = MDB_COL_ERROR;
 	}
-	
+	MDB_setRequest(MDB_REQ_FINISH);
 }
 
 void DEV_taskPoll(void)
 {
-	G_MDB_ST *g_mdb_st;
-	INT8U err;
-	g_mdb_st = OSQPend (g_mdb_event, 20, &err);
-	if(err == OS_NO_ERR){
-		print_dev("OSQPend:type= %d\r\n",g_mdb_st->type);
-		switch(g_mdb_st->type){
+	ST_MDB *mdb = &stMdb;
+	if(MDB_getRequest() == MDB_REQ_HANDLE){
+		print_dev("MDB-Request:type= %d\r\n",mdb->type);
+		switch(mdb->type){
 			case G_MDB_RESET:
-				DEV_mdbReset(g_mdb_st);
+				DEV_mdbReset(mdb);
 				break;
 			case G_MDB_SWITCH:
-				DEV_mdbSwitch(g_mdb_st);
+				DEV_mdbSwitch(mdb);
 				break;
 			case G_MDB_CTRL:
-				DEV_mdbCtrl(g_mdb_st);
+				DEV_mdbCtrl(mdb);
 				break;
 			default:break;
 		}
@@ -129,7 +122,7 @@ void DEV_task(void *pdata)
 	CreateMBox();
 	while(1){
 		DEV_taskPoll();
-		msleep(10);
+		msleep(20);
 	}
 }
 

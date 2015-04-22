@@ -125,11 +125,16 @@ typedef struct _st_bin_{
 
 
 /*********************************************************************************************************
-** MDB通信消息队列
+** MDB通信
 *********************************************************************************************************/
-#define G_MDB_SIZE    10
-typedef struct _g_mdb_st_{
+#define MDB_REQ_IDLE		0
+#define MDB_REQ_HANDLE		1
+#define MDB_REQ_FINISH		2
+
+
+typedef struct _st_mdb_{
 	uint8 type;
+	uint8 result;
 	ST_BIN *bin;
 	uint8 column;
 	uint8 coolCtrl;
@@ -138,9 +143,9 @@ typedef struct _g_mdb_st_{
 	int8 coolTemp;
 	int8 hotTemp;
 
-}G_MDB_ST;
+}ST_MDB;
 
-
+extern ST_MDB stMdb;
 
 
 #define G_MDB_RESET			0
@@ -148,10 +153,10 @@ typedef struct _g_mdb_st_{
 #define G_MDB_CTRL			2
 
 /*********************************************************************************************************
-**MDB邮箱接口声明
+**MDB通信接口声明
 *********************************************************************************************************/
-void MDB_createMbox(void);
-
+uint8 MDB_getRequest(void);
+void MDB_setRequest(uint8 req);
 
 
 /*********************************************************************************************************
@@ -169,7 +174,7 @@ void Uart2IsrHandler(void) ;
 unsigned char MDB_colAddrIsOk(unsigned char addr);
 unsigned char MDB_recvOk(unsigned char len);
 void MDB_analysis(void);
-void MDB_setColStatus(uint8 type);
+
 
 
 #endif
