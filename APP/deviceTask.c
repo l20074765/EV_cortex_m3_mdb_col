@@ -57,12 +57,12 @@ static void DEV_mdbSwitch(ST_MDB *mdb)
 	uint8 res;
 	res = BT_open(1,mdb->column);
 	if(res == 1){
-		stMdb.result = MDB_COL_SUCCESS;
+		MDB_setRequest(MDB_COL_SUCCESS);
 	}
 	else{
-		stMdb.result = MDB_COL_FAILED;
+		MDB_setRequest(MDB_COL_FAILED);
 	}
-	MDB_setRequest(MDB_REQ_FINISH);
+	
 }
 
 static void DEV_mdbCtrl(ST_MDB *mdb)
@@ -70,32 +70,34 @@ static void DEV_mdbCtrl(ST_MDB *mdb)
 	uint8 res;
 	res = EV_bento_light(1,mdb->lightCtrl);
 	if(res == 1){
-		stMdb.result = MDB_COL_IDLE;
+		MDB_setRequest(MDB_COL_IDLE);
 	}
 	else{
-		stMdb.result = MDB_COL_ERROR;
+		MDB_setRequest(MDB_COL_ERROR);
 	}
-	MDB_setRequest(MDB_REQ_FINISH);
+	
 }
 
 
 static void DEV_mdbReset(ST_MDB *mdb)
 {
 	uint8 res;
+	print_dev("DEV_mdbReset\r\n");
 	res = EV_bento_check(1,mdb->bin);
 	if(res == 1){
-		stMdb.result = MDB_COL_JUSTRESET;
+		MDB_setRequest(MDB_COL_JUSTRESET);
 	}
 	else{
-		stMdb.result = MDB_COL_ERROR;
+		MDB_setRequest(MDB_COL_ERROR);
 	}
-	MDB_setRequest(MDB_REQ_FINISH);
+	print_dev("MDB_getRequest() = %d\r\n",MDB_getRequest());
+	
 }
 
 void DEV_taskPoll(void)
 {
 	ST_MDB *mdb = &stMdb;
-	if(MDB_getRequest() == MDB_REQ_HANDLE){
+	if(MDB_getRequest() == MDB_COL_BUSY){
 		print_dev("MDB-Request:type= %d\r\n",mdb->type);
 		switch(mdb->type){
 			case G_MDB_RESET:

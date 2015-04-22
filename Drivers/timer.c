@@ -22,7 +22,7 @@
 ************************************************************************************************************/
 TIMER_ST Timer;
 
-
+static unsigned short timerSize = sizeof(TIMER_ST) / 2;
 
 
 
@@ -98,7 +98,7 @@ void TIMER0_IRQHandler (void)
 	T0IR = 1;	
 	
 	ptr = (unsigned short *)&Timer;
-	for(i = 0;i < (sizeof(Timer) / 2);i++){
+	for(i = 0;i < timerSize;i++){
 		if(ptr[i])	ptr[i]--;
 	}
 	OSIntExit();

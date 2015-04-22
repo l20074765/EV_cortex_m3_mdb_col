@@ -49,7 +49,8 @@ ST_BIN stBin;
 /*********************************************************************************************************
 ** MDB通信
 *********************************************************************************************************/
-volatile uint8 mdb_req = 0;
+volatile uint8 mdb_poll_s = MDB_COL_IDLE;
+volatile uint8 mdb_poll_send_s = MDB_COL_IDLE;
 ST_MDB stMdb;
 
 
@@ -65,7 +66,7 @@ ST_MDB stMdb;
 *********************************************************************************************************/
 uint8 MDB_getRequest(void)
 {
-	return mdb_req;
+	return mdb_poll_s;
 }
 
 /*********************************************************************************************************
@@ -77,7 +78,7 @@ uint8 MDB_getRequest(void)
 *********************************************************************************************************/
 void MDB_setRequest(uint8 req)
 {
-	mdb_req = req;
+	mdb_poll_s = req;
 }
 
 
@@ -90,11 +91,13 @@ void MDB_setRequest(uint8 req)
 
 static void MDB_recv_ack(uint8 cmd)
 {
+	print_mdb("MDB_recv_ack:cmd = %d req = %d\r\n",cmd,mdb_poll_send_s);
 	if(cmd == POLL){
-		if(MDB_getRequest() == MDB_REQ_FINISH){
-			MDB_setRequest(MDB_REQ_IDLE);
-		}
-	}
+		if(mdb_poll_send_s != MDB_COL_BUSY){
+				MDB_setRequest(MDB_COL_IDLE);
+				mdb_poll_send_s = MDB_COL_IDLE;
+			}
+		}	
 }
 
 
@@ -118,7 +121,7 @@ void uart2Init(void)
 	uart2SetParityMode(PARITY_F_0);//初始化需要将串口设置成0校验模式 用于接收地址
 	uart2Clear();
 	memset((void *)recvbuf,0x00,MDB_BUF_SIZE);                       
-    zyIsrSet(NVIC_UART2,(unsigned long)Uart2IsrHandler,PRIO_FIVE); 
+    zyIsrSet(NVIC_UART2,(unsigned long)Uart2IsrHandler,PRIO_ONE); 
 	
 }
 
@@ -350,30 +353,23 @@ uint8 MDB_send(uint8 *data,uint8 len)
 
 static void MDB_poll_rpt(void)
 {
-	uint8 s = MDB_COL_IDLE;
-	switch(mdb_req){
-		case MDB_REQ_HANDLE:
-			s = MDB_COL_BUSY;
-			break;
-		case MDB_REQ_FINISH:
-			s = stMdb.result;
-			break;
-		default:break;
-	}
+	uint8 s = mdb_poll_s;
+	print_mdb("MDB_poll_rpt:%d\r\n",s);
+	mdb_poll_send_s = s;
 	MDB_send(&s,1);
 }
 
 static void MDB_reset_rpt(void)
 {
-	if(MDB_getRequest() == MDB_REQ_HANDLE){
+	if(MDB_getRequest() == MDB_COL_BUSY){
 		MDB_sendNAK();
 	}
 	else{
+		MDB_setRequest(MDB_COL_BUSY);
 		MDB_send(NULL,0);
 		memset(&stBin,0,sizeof(stBin));
 		stMdb.bin = &stBin;
 		stMdb.type = G_MDB_RESET;
-		MDB_setRequest(MDB_REQ_HANDLE);
 	}
 }
 
@@ -381,25 +377,27 @@ static void MDB_reset_rpt(void)
 static void MDB_switch_rpt(void)
 {
 	uint8 column;
-	if(MDB_getRequest() == MDB_REQ_HANDLE){
+	if(MDB_getRequest() == MDB_COL_BUSY){
 		MDB_sendNAK();
 	}
 	else{
 		column = recvbuf[1];
+		MDB_setRequest(MDB_COL_BUSY);
 		MDB_send(NULL,0);
 		stMdb.type = G_MDB_SWITCH;
 		stMdb.column = column;
-		MDB_setRequest(MDB_REQ_HANDLE);
+		
 	}
 	
 }
 
 static void MDB_ctrl_rpt(void)
 {
-	if(MDB_getRequest() == MDB_REQ_HANDLE){
+	if(MDB_getRequest() == MDB_COL_BUSY){
 		MDB_sendNAK();
 	}
 	else{
+		MDB_setRequest(MDB_COL_BUSY);
 		MDB_send(NULL,0);
 		stMdb.type = G_MDB_CTRL;
 		stMdb.coolCtrl = recvbuf[1] & 0x01;
@@ -407,7 +405,7 @@ static void MDB_ctrl_rpt(void)
 		stMdb.hotCtrl = (recvbuf[1] >> 2) & 0x01;
 		stMdb.coolTemp = (int8)recvbuf[2];
 		stMdb.hotTemp  = (int8)recvbuf[3];
-		MDB_setRequest(MDB_REQ_HANDLE);	
+			
 	}
 	
 }
@@ -482,6 +480,7 @@ void MDB_analysis(void)
 			break;
 		default:break;
 	}
+	//延时
 }	
 
 

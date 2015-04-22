@@ -127,14 +127,9 @@ typedef struct _st_bin_{
 /*********************************************************************************************************
 ** MDBÍ¨ÐÅ
 *********************************************************************************************************/
-#define MDB_REQ_IDLE		0
-#define MDB_REQ_HANDLE		1
-#define MDB_REQ_FINISH		2
-
 
 typedef struct _st_mdb_{
 	uint8 type;
-	uint8 result;
 	ST_BIN *bin;
 	uint8 column;
 	uint8 coolCtrl;

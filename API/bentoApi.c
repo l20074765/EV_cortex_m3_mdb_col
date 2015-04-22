@@ -35,9 +35,6 @@ uint8 BT_recv(uint8 *rdata,uint8 *rlen)
     uint8 index = 0,len = 0,ch;
     uint16 crc;
 	*rlen = 0;
-    if(rdata == NULL){
-		return 0;
-	}   
 	Timer.bentoTimeout = 200;
     while(Timer.bentoTimeout){ 
 		if(uartIsNotEmpty()){
@@ -61,6 +58,7 @@ uint8 BT_recv(uint8 *rdata,uint8 *rlen)
                     return 0;
             }
 		}
+		msleep(10);
 	}
 	return 0;
 	
@@ -83,9 +81,25 @@ uint8 BT_send(uint8 cmd,uint8 cabinet,uint8 arg,uint8 *rdata)
 	crc = CrcCheck(buf,len);
 	buf[len++] = HUINT16(crc);
 	buf[len++] = LUINT16(crc);
+	#ifdef BENTO_DEBUG
+	print_bento("BT-Send[%d]:",len);
+	for(i = 0;i < len;i++){
+		print_bento("%02x ",buf[i]);
+	}
+	print_bento("\r\n");
+	#endif
+	
 	uartClear();
 	uartPutStr(buf,len);
 	ret = BT_recv(rbuf,&len);
+	
+	#ifdef BENTO_DEBUG
+	print_bento("BT-Recv[%d]:",len);
+	for(i = 0;i < len;i++){
+		print_bento("%02x ",rbuf[i]);
+	}
+	print_bento("\r\n");
+	#endif
 	if(ret == 1){
 		if(cmd == BT_TYPE_OPEN){
 			if(rbuf[3] == BT_TYPE_OPEN_ACK){
