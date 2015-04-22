@@ -66,13 +66,6 @@
 *********************************************************************************************************/
 
 
-#define COL_GOODS_A		0xE0
-#define COL_GOODS_B		0xE8
-
-#define COL_FOODS_A		0x80
-#define COL_FOODS_B		0x88
-
-
 #define RESET			0x00
 #define SWITCH			0x01
 #define CTRL			0x02
@@ -92,7 +85,7 @@
 #define MDB_COL_SUCCESS		4
 #define MDB_COL_ERROR		5
 #define MDB_COL_JUSTRESET	6
-
+#define MDB_COL_N_A			0xEE
 
 
 #define COL_BIT_COOL	(0x01U << 0)
@@ -106,6 +99,8 @@ typedef struct _st_column_{
 }ST_COLUMN;
 
 
+#define MDB_BIN_SIZE	4
+
 typedef struct _st_bin_{
 	uint8 ishot;
 	uint8 iscool;
@@ -118,6 +113,8 @@ typedef struct _st_bin_{
 	uint8 id[20];
 	uint8 id_len;
 	uint8 type;
+	uint8 binNo;
+	uint8 mdbAddr;
 	ST_COLUMN col[120];
 }ST_BIN;
 
@@ -150,8 +147,8 @@ extern ST_MDB stMdb;
 /*********************************************************************************************************
 **MDB通信接口声明
 *********************************************************************************************************/
-uint8 MDB_getRequest(void);
-void MDB_setRequest(uint8 req);
+uint8 MDB_getStatus(void);
+void MDB_setStatus(uint8 s);
 
 
 /*********************************************************************************************************
@@ -169,8 +166,8 @@ void Uart2IsrHandler(void) ;
 unsigned char MDB_colAddrIsOk(unsigned char addr);
 unsigned char MDB_recvOk(unsigned char len);
 void MDB_analysis(void);
-
-
+void MDB_binInit(void);
+uint8 MDB_getBinNo(void);
 
 #endif
 

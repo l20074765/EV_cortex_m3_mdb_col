@@ -3,6 +3,7 @@
 
 //#define DEV_DEBUG
 #ifdef DEV_DEBUG
+
 #define print_dev(...)	Trace(__VA_ARGS__)
 #else
 #define print_dev(...)
@@ -55,12 +56,12 @@ void SystemInit()
 static void DEV_mdbSwitch(ST_MDB *mdb)
 {
 	uint8 res;
-	res = BT_open(1,mdb->column);
+	res = BT_open(MDB_getBinNo(),mdb->column);
 	if(res == 1){
-		MDB_setRequest(MDB_COL_SUCCESS);
+		MDB_setStatus(MDB_COL_SUCCESS);
 	}
 	else{
-		MDB_setRequest(MDB_COL_FAILED);
+		MDB_setStatus(MDB_COL_FAILED);
 	}
 	
 }
@@ -68,12 +69,12 @@ static void DEV_mdbSwitch(ST_MDB *mdb)
 static void DEV_mdbCtrl(ST_MDB *mdb)
 {
 	uint8 res;
-	res = EV_bento_light(1,mdb->lightCtrl);
+	res = EV_bento_light(MDB_getBinNo(),mdb->lightCtrl);
 	if(res == 1){
-		MDB_setRequest(MDB_COL_IDLE);
+		MDB_setStatus(MDB_COL_IDLE);
 	}
 	else{
-		MDB_setRequest(MDB_COL_ERROR);
+		MDB_setStatus(MDB_COL_ERROR);
 	}
 	
 }
@@ -83,21 +84,21 @@ static void DEV_mdbReset(ST_MDB *mdb)
 {
 	uint8 res;
 	print_dev("DEV_mdbReset\r\n");
-	res = EV_bento_check(1,mdb->bin);
+	res = EV_bento_check(MDB_getBinNo(),mdb->bin);
 	if(res == 1){
-		MDB_setRequest(MDB_COL_JUSTRESET);
+		MDB_setStatus(MDB_COL_JUSTRESET);
 	}
 	else{
-		MDB_setRequest(MDB_COL_ERROR);
+		MDB_setStatus(MDB_COL_ERROR);
 	}
-	print_dev("MDB_getRequest() = %d\r\n",MDB_getRequest());
+	print_dev("MDB_getRequest() = %d\r\n",MDB_getStatus());
 	
 }
 
 void DEV_taskPoll(void)
 {
 	ST_MDB *mdb = &stMdb;
-	if(MDB_getRequest() == MDB_COL_BUSY){
+	if(MDB_getStatus() == MDB_COL_BUSY){
 		print_dev("MDB-Request:type= %d\r\n",mdb->type);
 		switch(mdb->type){
 			case G_MDB_RESET:
@@ -122,6 +123,7 @@ void DEV_task(void *pdata)
 	SystemInit();
 	//建立邮箱、信号量	
 	CreateMBox();
+	MDB_binInit();//初始化柜子
 	while(1){
 		DEV_taskPoll();
 		msleep(20);

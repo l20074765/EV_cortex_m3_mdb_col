@@ -42,19 +42,30 @@ static volatile uint8 mdb_status = MDB_DEV_IDLE;
 static volatile uint8 mdb_addr = 0;
 static volatile uint8 mdb_cmd = 0;
 
-ST_BIN stBin;
+ST_BIN stBin[MDB_BIN_SIZE];
 
 
 
 /*********************************************************************************************************
 ** MDB通信
 *********************************************************************************************************/
-volatile uint8 mdb_poll_s = MDB_COL_IDLE;
-volatile uint8 mdb_poll_send_s = MDB_COL_IDLE;
+volatile uint8 m_mdbStatus[MDB_BIN_SIZE] = {MDB_COL_IDLE};
+volatile uint8 m_mdbSendStatus[MDB_BIN_SIZE] = {MDB_COL_IDLE};
+const uint8 m_addr[MDB_BIN_SIZE] = {0x80,0x88,0xE0,0xE8};
+
 ST_MDB stMdb;
 
 
-
+uint8 MDB_getIndex(uint8 addr)
+{
+	uint8 i;
+	for(i = 0;i < MDB_BIN_SIZE;i++){
+		if(m_addr[i] == addr){
+			return i;
+		}
+	}
+	return MDB_COL_N_A;
+}
 
 
 /*********************************************************************************************************
@@ -64,9 +75,16 @@ ST_MDB stMdb;
 ** output parameters:   无
 ** Returned value:      0 无请求 1正在处理请求 2处理完成
 *********************************************************************************************************/
-uint8 MDB_getRequest(void)
+uint8 MDB_getStatus(void)
 {
-	return mdb_poll_s;
+	uint8 i;
+	i = MDB_getIndex(mdb_addr);
+	if(i == MDB_COL_N_A){
+		return MDB_COL_N_A;
+	}
+	else{
+		return m_mdbStatus[i];
+	}
 }
 
 /*********************************************************************************************************
@@ -76,10 +94,50 @@ uint8 MDB_getRequest(void)
 ** output parameters:   无
 ** Returned value:      无
 *********************************************************************************************************/
-void MDB_setRequest(uint8 req)
+void MDB_setStatus(uint8 s)
 {
-	mdb_poll_s = req;
+	uint8 i;
+	i = MDB_getIndex(mdb_addr);
+	if(i != MDB_COL_N_A){
+		m_mdbStatus[i] = s;
+	}
 }
+
+/*********************************************************************************************************
+** Function name:     	MDB_getReqStatus
+** Descriptions:	    查询MDB请求状态
+** input parameters:    无
+** output parameters:   无
+** Returned value:      0 无请求 1正在处理请求 2处理完成
+*********************************************************************************************************/
+uint8 MDB_getSendStatus(void)
+{
+	uint8 i;
+	i = MDB_getIndex(mdb_addr);
+	if(i == MDB_COL_N_A){
+		return MDB_COL_N_A;
+	}
+	else{
+		return m_mdbSendStatus[i];
+	}
+}
+
+/*********************************************************************************************************
+** Function name:     	MDB_SetRequest
+** Descriptions:	    设置MDB请求
+** input parameters:    无
+** output parameters:   无
+** Returned value:      无
+*********************************************************************************************************/
+void MDB_setSendStatus(uint8 s)
+{
+	uint8 i;
+	i = MDB_getIndex(mdb_addr);
+	if(i != MDB_COL_N_A){
+		m_mdbSendStatus[i] = s;
+	}
+}
+
 
 
 
@@ -91,13 +149,12 @@ void MDB_setRequest(uint8 req)
 
 static void MDB_recv_ack(uint8 cmd)
 {
-	print_mdb("MDB_recv_ack:cmd = %d req = %d\r\n",cmd,mdb_poll_send_s);
 	if(cmd == POLL){
-		if(mdb_poll_send_s != MDB_COL_BUSY){
-				MDB_setRequest(MDB_COL_IDLE);
-				mdb_poll_send_s = MDB_COL_IDLE;
-			}
-		}	
+		if(MDB_getSendStatus() != MDB_COL_BUSY){
+			MDB_setStatus(MDB_COL_IDLE);
+			MDB_setSendStatus(MDB_COL_IDLE);
+		}
+	}	
 }
 
 
@@ -218,9 +275,8 @@ void MDB_putChr(unsigned char dat,unsigned char mode)
 *********************************************************************************************************/
 void Uart2IsrHandler(void) 
 {
-	volatile unsigned char dummy;
-	unsigned int intsrc, tmp, tmp1;
-	unsigned char udata;
+	volatile uint8 dummy,udata;
+	volatile uint32 intsrc, tmp, tmp1;
 	OSIntEnter();	
 	intsrc = U2IIR;									//Determine the interrupt source 
 	tmp = intsrc & UART_IIR_INTID_MASK;				//UART_IIR_INTID_MASK = 0x0000000E,U2IIR[3:1]为中断标识
@@ -240,7 +296,9 @@ void Uart2IsrHandler(void)
 					rx = 0;
 					recvbuf[rx++] = udata;
 					crc = udata;//校验码
-				}		
+				}
+				print_mdb("Uart2IsrHandler:addr= %x,cmd = %d,crc=%x\r\n",
+						mdb_addr,mdb_cmd,crc);				
 			}				
 		}
 		else if(tmp1)//其他错误引起的中断则忽略掉 
@@ -267,6 +325,7 @@ void Uart2IsrHandler(void)
 				else{
 					crc += udata;
 				}
+				print_mdb("Isr:rx=%d,crc= %x,udata = %x\r\n",rx,crc,udata);
 			}
 			else{
 				mdb_status = MDB_DEV_IDLE;
@@ -291,19 +350,20 @@ void Uart2IsrHandler(void)
 
 unsigned char MDB_colAddrIsOk(unsigned char addr)
 {
-	if(addr == COL_GOODS_A || addr == COL_GOODS_B ||
-		addr == COL_FOODS_A || addr == COL_FOODS_B){					
-		return 1;			
+	uint8 i;
+	for(i = 0;i < MDB_BIN_SIZE;i++){
+		if(addr == m_addr[i]){
+			return 1;
+		}
 	}
-	else{
-		return 0;
-	}	
+	return 0;
 }
 
 
 unsigned char MDB_recvOk(unsigned char len)
 {
 	unsigned char ok = 0;
+	
 	switch(mdb_cmd){
 		case RESET : case COLUMN :case POLL :case STATUS :
 			if(len >= 2) ok = 1;
@@ -316,14 +376,21 @@ unsigned char MDB_recvOk(unsigned char len)
 			break;
 		default:break;
 	}
-	
+	print_mdb("MDB_recvOk[%x]:ok= %d,curLen = %d\r\n",mdb_addr,ok,len);
 	return ok;
 }
 
 
-void MDB_sendNAK(void)
+void MDB_sendACK(uint8 ack)
 {
-	MDB_putChr(MDB_NAK,MDB_ADD);
+	if(ack == 1){
+		MDB_putChr(MDB_ACK,MDB_ADD);
+	}
+	else{
+		MDB_putChr(MDB_NAK,MDB_ADD);
+	}
+	uart2SetParityMode(PARITY_F_0);
+	
 }
 
 
@@ -348,28 +415,72 @@ uint8 MDB_send(uint8 *data,uint8 len)
 
 
 
+void MDB_binInit(void)
+{
+	uint8 i = 0;
+	for(i = 0;i < MDB_BIN_SIZE;i++){
+		memset(&stBin[i],0,sizeof(ST_BIN));
+		stBin[i].binNo = i + 1;
+		stBin[i].mdbAddr = m_addr[i]; 
+	}
+}
+
+uint8 MDB_getBinNo(void)
+{
+	uint8 no;
+	no = MDB_getIndex(mdb_addr);
+	if(no == MDB_COL_N_A){
+		return MDB_COL_N_A;
+	}
+	else{
+		return stBin[no].binNo;
+	}
+}
+
+static ST_BIN *MDB_getBin(uint8 mdbAddr)
+{
+	uint8 i = 0;
+	for(i = 0;i < MDB_BIN_SIZE;i++){
+		if(stBin[i].mdbAddr == mdbAddr){
+			return &stBin[i];
+		}
+	}
+	return NULL;
+}
+
 
 
 
 static void MDB_poll_rpt(void)
 {
-	uint8 s = mdb_poll_s;
-	print_mdb("MDB_poll_rpt:%d\r\n",s);
-	mdb_poll_send_s = s;
+	uint8 s = MDB_getStatus();
+	print_mdb("MDB_poll_rpt:s = %d addr=%x\r\n",s,mdb_addr);
+	MDB_setSendStatus(s);
 	MDB_send(&s,1);
 }
 
 static void MDB_reset_rpt(void)
 {
-	if(MDB_getRequest() == MDB_COL_BUSY){
-		MDB_sendNAK();
+	//uint8 no;
+	if(MDB_getStatus() == MDB_COL_BUSY){
+		MDB_sendACK(0);
 	}
 	else{
-		MDB_setRequest(MDB_COL_BUSY);
-		MDB_send(NULL,0);
-		memset(&stBin,0,sizeof(stBin));
-		stMdb.bin = &stBin;
-		stMdb.type = G_MDB_RESET;
+		stMdb.bin = MDB_getBin(mdb_addr);
+		if(stMdb.bin == NULL){
+			MDB_sendACK(0);
+		}
+		else{
+			//no = stMdb.bin->binNo;
+			//memset(stMdb.bin,0,sizeof(stBin));
+			//stMdb.bin->binNo = no;
+			//stMdb.bin->mdbAddr = mdb_addr;
+			stMdb.type = G_MDB_RESET;
+			MDB_setStatus(MDB_COL_BUSY);
+			MDB_sendACK(1);
+			print_mdb("MDB_reset_rpt:s = %d addr=%x\r\n",MDB_getStatus(),mdb_addr);
+		}
+		
 	}
 }
 
@@ -377,68 +488,71 @@ static void MDB_reset_rpt(void)
 static void MDB_switch_rpt(void)
 {
 	uint8 column;
-	if(MDB_getRequest() == MDB_COL_BUSY){
-		MDB_sendNAK();
+	if(MDB_getStatus() == MDB_COL_BUSY){
+		MDB_sendACK(0);
 	}
 	else{
 		column = recvbuf[1];
-		MDB_setRequest(MDB_COL_BUSY);
-		MDB_send(NULL,0);
 		stMdb.type = G_MDB_SWITCH;
 		stMdb.column = column;
-		
+		MDB_setStatus(MDB_COL_BUSY);
+		MDB_sendACK(1);
 	}
 	
 }
 
 static void MDB_ctrl_rpt(void)
 {
-	if(MDB_getRequest() == MDB_COL_BUSY){
-		MDB_sendNAK();
+	if(MDB_getStatus() == MDB_COL_BUSY){
+		MDB_sendACK(0);
 	}
 	else{
-		MDB_setRequest(MDB_COL_BUSY);
-		MDB_send(NULL,0);
 		stMdb.type = G_MDB_CTRL;
 		stMdb.coolCtrl = recvbuf[1] & 0x01;
 		stMdb.lightCtrl = (recvbuf[1] >> 1) & 0x01;
 		stMdb.hotCtrl = (recvbuf[1] >> 2) & 0x01;
 		stMdb.coolTemp = (int8)recvbuf[2];
-		stMdb.hotTemp  = (int8)recvbuf[3];
-			
+		stMdb.hotTemp  = (int8)recvbuf[3];	
+		MDB_setStatus(MDB_COL_BUSY);
+		MDB_sendACK(1);
 	}
-	
 }
 
 static void MDB_column_rpt(void)
 {
 	uint8 index = 0,i,j,temp,colindex = 0;
 	uint8 buf[36] = {0};
-	stBin.sum = 64;
-	for(i = 0;i < (stBin.sum / 8);i++){
-		temp = 0;
-		for(j = 0;j < 8;j++){
-			if(stBin.col[colindex++].empty == 1){
-				temp |= (0x01 << j);
-			}
-		}
-		buf[index++] = temp;
+	ST_BIN *bin;
+	bin = MDB_getBin(mdb_addr);
+	if(bin == NULL){
+		MDB_sendACK(0);
 	}
-	
-	if(stBin.sum % 8){
-		temp = 0;
-		for(j = 0;j < (stBin.sum % 8);j++){
-			if(stBin.col[colindex++].empty == 1){
-				temp |= (0x01 << j);
+	else{
+		//bin->sum = 64;	
+		for(i = 0;i < (bin->sum / 8);i++){
+			temp = 0;
+			for(j = 0;j < 8;j++){
+				if(bin->col[colindex++].empty == 1){
+					temp |= (0x01 << j);
+				}
 			}
+			buf[index++] = temp;
 		}
-		buf[index++] = temp;
+		if(bin->sum % 8){
+			temp = 0;
+			for(j = 0;j < (bin->sum % 8);j++){
+				if(bin->col[colindex++].empty == 1){
+					temp |= (0x01 << j);
+				}
+			}
+			buf[index++] = temp;
+		}
+		buf[index++] = bin->sum;
+		buf[index++] = bin->sensorFault & 0x01;
+		buf[index++] = bin->coolTemp;
+		buf[index++] = bin->hotTemp;	
+		MDB_send(buf,index);		
 	}
-	buf[index++] = stBin.sum;
-	buf[index++] = stBin.sensorFault & 0x01;
-	buf[index++] = stBin.coolTemp;
-	buf[index++] = stBin.hotTemp;	
-	MDB_send(buf,index);
 	
 }
 
@@ -446,19 +560,29 @@ static void MDB_column_rpt(void)
 static void MDB_status_rpt(void)
 {
 	uint8 index = 0,buf[16] = {0};
-	buf[index++] = 0x12;
-	buf[index++] = 0x34;
-	buf[index++] = stBin.sum;
-	buf[index++] = 0;//reserved
-	buf[index++] = 0;//reserved
-	buf[index++] = (0x00 << 3) | (stBin.ishot << 1) | (stBin.iscool << 0);//feature
-	buf[index++] = 0;//reserved
-	buf[index++] = 0;//reserved
-	MDB_send(buf,index);
+	ST_BIN *bin;
+	bin = MDB_getBin(mdb_addr);
+	if(bin == NULL){
+		MDB_sendACK(0);
+	}
+	else{
+		buf[index++] = 0x12;
+		buf[index++] = 0x34;
+		buf[index++] = bin->sum;
+		buf[index++] = 0;//reserved
+		buf[index++] = 0;//reserved
+		buf[index++] = (0x00 << 3) | (bin->ishot << 1) | (bin->iscool << 0);//feature
+		buf[index++] = 0;//reserved
+		buf[index++] = 0;//reserved
+		MDB_send(buf,index);
+	}
+	
+	
 }
 
 void MDB_analysis(void)
 {
+	print_mdb("MDB_analysis:cmd = %d\r\n",mdb_cmd);
 	switch(mdb_cmd){
 		case RESET : 
 			MDB_reset_rpt();
