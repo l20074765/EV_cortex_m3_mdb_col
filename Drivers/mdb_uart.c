@@ -37,6 +37,7 @@ static volatile uint8 mdb_col_status = MDB_COL_IDLE;
 ST_BIN stBin;
 
 
+
 /*********************************************************************************************************
 ** MDB通信消息队列
 *********************************************************************************************************/
@@ -69,6 +70,20 @@ void MDB_mboxSend(uint8 type)
 }
 
 
+
+
+static void MDB_recv_ack(uint8 cmd)
+{
+	cmd = cmd;
+	#if 0
+	if(cmd == POLL){
+		if(mdb_col_status != MDB_COL_BUSY && 
+			mdb_col_status != MDB_COL_IDLE){
+			mdb_col_status = MDB_COL_IDLE;
+		}
+	}
+	#endif
+}
 
 
 /*********************************************************************************************************
@@ -291,18 +306,7 @@ unsigned char MDB_recvOk(unsigned char len)
 }
 
 
-void MDB_recv_ack(uint8 cmd)
-{
-	cmd = cmd;
-	#if 0
-	if(cmd == POLL){
-		if(mdb_col_status != MDB_COL_BUSY && 
-			mdb_col_status != MDB_COL_IDLE){
-			mdb_col_status = MDB_COL_IDLE;
-		}
-	}
-	#endif
-}
+
 
 
 uint8 MDB_send(uint8 *data,uint8 len)

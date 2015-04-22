@@ -170,7 +170,7 @@ unsigned char MDB_colAddrIsOk(unsigned char addr);
 unsigned char MDB_recvOk(unsigned char len);
 void MDB_analysis(void);
 void MDB_setColStatus(uint8 type);
-void MDB_recv_ack(uint8 cmd);
+
 
 #endif
 
