@@ -125,19 +125,28 @@ typedef struct _st_bin_{
 ** MDB通信
 *********************************************************************************************************/
 
-typedef struct _st_mdb_{
-	uint8 type;
-	ST_BIN *bin;
-	uint8 column;
+typedef struct _mdb_switch_{
+	uint8 col;
+}MDB_SWITCH;
+
+typedef struct _mdb_ctrl_{
 	uint8 coolCtrl;
 	uint8 hotCtrl;
 	uint8 lightCtrl;
 	int8 coolTemp;
 	int8 hotTemp;
+}MDB_CTRL;
 
+typedef struct _st_mdb_{
+	uint8 cmd;
+	uint8 mdbAddr;
+	uint8 binNo;
+	MDB_CTRL ctrl;
+	MDB_SWITCH sw;
+	ST_BIN bin;
 }ST_MDB;
 
-extern ST_MDB stMdb;
+extern ST_MDB stMdb[MDB_BIN_SIZE];
 
 
 #define G_MDB_RESET			0
@@ -147,9 +156,9 @@ extern ST_MDB stMdb;
 /*********************************************************************************************************
 **MDB通信接口声明
 *********************************************************************************************************/
-uint8 MDB_getStatus(void);
-void MDB_setStatus(uint8 s);
-
+uint8 MDB_getStatus(uint8 addr);
+void MDB_setStatus(uint8 addr,uint8 s);
+uint8 MDB_getRequest(ST_MDB **mdb);
 
 /*********************************************************************************************************
 **uart串口函数声明
@@ -167,7 +176,7 @@ unsigned char MDB_colAddrIsOk(unsigned char addr);
 unsigned char MDB_recvOk(unsigned char len);
 void MDB_analysis(void);
 void MDB_binInit(void);
-uint8 MDB_getBinNo(void);
+ST_MDB *MDB_getPtr(void);
 
 #endif
 

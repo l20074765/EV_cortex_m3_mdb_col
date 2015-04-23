@@ -13,10 +13,10 @@
 ** Descriptions:        The original version       
 ********************************************************************************************************/
 
-#include "mdb_uart.h"
+//#include "mdb_uart.h"
 #include "..\config.h"
 
-//#define MDB_DEBUG
+#define MDB_DEBUG
 #ifdef MDB_DEBUG
 #define print_mdb(...)	Trace(__VA_ARGS__)
 #else
@@ -42,18 +42,14 @@ static volatile uint8 mdb_status = MDB_DEV_IDLE;
 static volatile uint8 mdb_addr = 0;
 static volatile uint8 mdb_cmd = 0;
 
-ST_BIN stBin[MDB_BIN_SIZE];
-
-
+const uint8 m_addr[MDB_BIN_SIZE] = {0x80,0x88,0xE0,0xE8};
 
 /*********************************************************************************************************
 ** MDB通信
 *********************************************************************************************************/
 volatile uint8 m_mdbStatus[MDB_BIN_SIZE] = {MDB_COL_IDLE};
 volatile uint8 m_mdbSendStatus[MDB_BIN_SIZE] = {MDB_COL_IDLE};
-const uint8 m_addr[MDB_BIN_SIZE] = {0x80,0x88,0xE0,0xE8};
-
-ST_MDB stMdb;
+ST_MDB stMdb[MDB_BIN_SIZE];
 
 
 uint8 MDB_getIndex(uint8 addr)
@@ -68,6 +64,45 @@ uint8 MDB_getIndex(uint8 addr)
 }
 
 
+ST_MDB *MDB_getPtr(void)
+{
+	uint8 i;
+	i = MDB_getIndex(mdb_addr);
+	if(i == MDB_COL_N_A){
+		return NULL;;
+	}
+	else{
+		return &stMdb[i];
+	}
+}
+
+
+
+/*********************************************************************************************************
+** Function name:     	MDB_getRequest
+** Descriptions:	    查询MDB请求状态
+** input parameters:    mdb 结构体指针的指针
+** output parameters:   有请求则会将请求的结构体指针赋值给 mdb
+** Returned value:      0 无请求 1有请求
+*********************************************************************************************************/
+uint8 MDB_getRequest(ST_MDB **mdb)
+{
+	uint8 i;
+	i = MDB_getIndex(mdb_addr);
+	if(i == MDB_COL_N_A){
+		return 0;
+	}
+	else{
+		if(m_mdbStatus[i] == MDB_COL_BUSY){
+			*mdb = &stMdb[i];
+			return (*mdb == NULL) ? 0 : 1;
+		}
+		else{
+			return 0;
+		}
+	}
+}
+
 /*********************************************************************************************************
 ** Function name:     	MDB_getReqStatus
 ** Descriptions:	    查询MDB请求状态
@@ -75,10 +110,10 @@ uint8 MDB_getIndex(uint8 addr)
 ** output parameters:   无
 ** Returned value:      0 无请求 1正在处理请求 2处理完成
 *********************************************************************************************************/
-uint8 MDB_getStatus(void)
+uint8 MDB_getStatus(uint8 addr)
 {
 	uint8 i;
-	i = MDB_getIndex(mdb_addr);
+	i = MDB_getIndex(addr);
 	if(i == MDB_COL_N_A){
 		return MDB_COL_N_A;
 	}
@@ -87,6 +122,10 @@ uint8 MDB_getStatus(void)
 	}
 }
 
+
+
+
+
 /*********************************************************************************************************
 ** Function name:     	MDB_SetRequest
 ** Descriptions:	    设置MDB请求
@@ -94,10 +133,10 @@ uint8 MDB_getStatus(void)
 ** output parameters:   无
 ** Returned value:      无
 *********************************************************************************************************/
-void MDB_setStatus(uint8 s)
+void MDB_setStatus(uint8 addr,uint8 s)
 {
 	uint8 i;
-	i = MDB_getIndex(mdb_addr);
+	i = MDB_getIndex(addr);
 	if(i != MDB_COL_N_A){
 		m_mdbStatus[i] = s;
 	}
@@ -129,10 +168,10 @@ uint8 MDB_getSendStatus(void)
 ** output parameters:   无
 ** Returned value:      无
 *********************************************************************************************************/
-void MDB_setSendStatus(uint8 s)
+void MDB_setSendStatus(uint8 addr,uint8 s)
 {
 	uint8 i;
-	i = MDB_getIndex(mdb_addr);
+	i = MDB_getIndex(addr);
 	if(i != MDB_COL_N_A){
 		m_mdbSendStatus[i] = s;
 	}
@@ -151,8 +190,8 @@ static void MDB_recv_ack(uint8 cmd)
 {
 	if(cmd == POLL){
 		if(MDB_getSendStatus() != MDB_COL_BUSY){
-			MDB_setStatus(MDB_COL_IDLE);
-			MDB_setSendStatus(MDB_COL_IDLE);
+			MDB_setStatus(mdb_addr,MDB_COL_IDLE);
+			MDB_setSendStatus(mdb_addr,MDB_COL_IDLE);
 		}
 	}	
 }
@@ -296,9 +335,7 @@ void Uart2IsrHandler(void)
 					rx = 0;
 					recvbuf[rx++] = udata;
 					crc = udata;//校验码
-				}
-				print_mdb("Uart2IsrHandler:addr= %x,cmd = %d,crc=%x\r\n",
-						mdb_addr,mdb_cmd,crc);				
+				}			
 			}				
 		}
 		else if(tmp1)//其他错误引起的中断则忽略掉 
@@ -325,7 +362,6 @@ void Uart2IsrHandler(void)
 				else{
 					crc += udata;
 				}
-				print_mdb("Isr:rx=%d,crc= %x,udata = %x\r\n",rx,crc,udata);
 			}
 			else{
 				mdb_status = MDB_DEV_IDLE;
@@ -376,7 +412,6 @@ unsigned char MDB_recvOk(unsigned char len)
 			break;
 		default:break;
 	}
-	print_mdb("MDB_recvOk[%x]:ok= %d,curLen = %d\r\n",mdb_addr,ok,len);
 	return ok;
 }
 
@@ -419,111 +454,81 @@ void MDB_binInit(void)
 {
 	uint8 i = 0;
 	for(i = 0;i < MDB_BIN_SIZE;i++){
-		memset(&stBin[i],0,sizeof(ST_BIN));
-		stBin[i].binNo = i + 1;
-		stBin[i].mdbAddr = m_addr[i]; 
+		memset(&stMdb[i],0,sizeof(ST_MDB));
+		stMdb[i].binNo = i + 1;
+		stMdb[i].mdbAddr = m_addr[i]; 
 	}
 }
 
-uint8 MDB_getBinNo(void)
-{
-	uint8 no;
-	no = MDB_getIndex(mdb_addr);
-	if(no == MDB_COL_N_A){
-		return MDB_COL_N_A;
-	}
-	else{
-		return stBin[no].binNo;
-	}
-}
-
-static ST_BIN *MDB_getBin(uint8 mdbAddr)
-{
-	uint8 i = 0;
-	for(i = 0;i < MDB_BIN_SIZE;i++){
-		if(stBin[i].mdbAddr == mdbAddr){
-			return &stBin[i];
-		}
-	}
-	return NULL;
-}
 
 
 
 
 static void MDB_poll_rpt(void)
 {
-	uint8 s = MDB_getStatus();
+	uint8 s = MDB_getStatus(mdb_addr);
 	print_mdb("MDB_poll_rpt:s = %d addr=%x\r\n",s,mdb_addr);
-	MDB_setSendStatus(s);
+	MDB_setSendStatus(mdb_addr,s);
 	MDB_send(&s,1);
 }
 
-static void MDB_reset_rpt(void)
+static void MDB_reset_rpt(ST_MDB *mdb)
 {
 	//uint8 no;
-	if(MDB_getStatus() == MDB_COL_BUSY){
+	if(MDB_getStatus(mdb->mdbAddr) == MDB_COL_BUSY){
 		MDB_sendACK(0);
 	}
 	else{
-		stMdb.bin = MDB_getBin(mdb_addr);
-		if(stMdb.bin == NULL){
-			MDB_sendACK(0);
-		}
-		else{
-			//no = stMdb.bin->binNo;
-			//memset(stMdb.bin,0,sizeof(stBin));
-			//stMdb.bin->binNo = no;
-			//stMdb.bin->mdbAddr = mdb_addr;
-			stMdb.type = G_MDB_RESET;
-			MDB_setStatus(MDB_COL_BUSY);
-			MDB_sendACK(1);
-			print_mdb("MDB_reset_rpt:s = %d addr=%x\r\n",MDB_getStatus(),mdb_addr);
-		}
-		
+		memset(&mdb->bin,0,sizeof(ST_BIN));
+		mdb->cmd = G_MDB_RESET;
+		MDB_setStatus(mdb->mdbAddr,MDB_COL_BUSY);
+		MDB_sendACK(1);
 	}
 }
 
 
-static void MDB_switch_rpt(void)
+static void MDB_switch_rpt(ST_MDB *mdb)
 {
 	uint8 column;
-	if(MDB_getStatus() == MDB_COL_BUSY){
+	if(MDB_getStatus(mdb->mdbAddr) == MDB_COL_BUSY){
 		MDB_sendACK(0);
 	}
 	else{
 		column = recvbuf[1];
-		stMdb.type = G_MDB_SWITCH;
-		stMdb.column = column;
-		MDB_setStatus(MDB_COL_BUSY);
+		mdb = MDB_getPtr();
+		mdb->cmd = G_MDB_SWITCH;
+		mdb->sw.col = column;
+		MDB_setStatus(mdb->mdbAddr,MDB_COL_BUSY);
 		MDB_sendACK(1);
 	}
 	
 }
 
-static void MDB_ctrl_rpt(void)
+static void MDB_ctrl_rpt(ST_MDB *mdb)
 {
-	if(MDB_getStatus() == MDB_COL_BUSY){
+	MDB_CTRL *ctrl;
+	if(MDB_getStatus(mdb->mdbAddr) == MDB_COL_BUSY){
 		MDB_sendACK(0);
 	}
 	else{
-		stMdb.type = G_MDB_CTRL;
-		stMdb.coolCtrl = recvbuf[1] & 0x01;
-		stMdb.lightCtrl = (recvbuf[1] >> 1) & 0x01;
-		stMdb.hotCtrl = (recvbuf[1] >> 2) & 0x01;
-		stMdb.coolTemp = (int8)recvbuf[2];
-		stMdb.hotTemp  = (int8)recvbuf[3];	
-		MDB_setStatus(MDB_COL_BUSY);
+		mdb->cmd = G_MDB_CTRL;
+		ctrl = &mdb->ctrl;
+		ctrl->coolCtrl = recvbuf[1] & 0x01;
+		ctrl->lightCtrl = (recvbuf[1] >> 1) & 0x01;
+		ctrl->hotCtrl = (recvbuf[1] >> 2) & 0x01;
+		ctrl->coolTemp = (int8)recvbuf[2];
+		ctrl->hotTemp  = (int8)recvbuf[3];	
+		MDB_setStatus(mdb->mdbAddr,MDB_COL_BUSY);
 		MDB_sendACK(1);
 	}
 }
 
-static void MDB_column_rpt(void)
+static void MDB_column_rpt(ST_MDB *mdb)
 {
 	uint8 index = 0,i,j,temp,colindex = 0;
 	uint8 buf[36] = {0};
 	ST_BIN *bin;
-	bin = MDB_getBin(mdb_addr);
+	bin = &mdb->bin;
 	if(bin == NULL){
 		MDB_sendACK(0);
 	}
@@ -557,11 +562,11 @@ static void MDB_column_rpt(void)
 }
 
 
-static void MDB_status_rpt(void)
+static void MDB_status_rpt(ST_MDB *mdb)
 {
 	uint8 index = 0,buf[16] = {0};
 	ST_BIN *bin;
-	bin = MDB_getBin(mdb_addr);
+	bin = &mdb->bin;
 	if(bin == NULL){
 		MDB_sendACK(0);
 	}
@@ -582,25 +587,27 @@ static void MDB_status_rpt(void)
 
 void MDB_analysis(void)
 {
-	print_mdb("MDB_analysis:cmd = %d\r\n",mdb_cmd);
+	ST_MDB *mdb;
+	mdb = MDB_getPtr();
+	print_mdb("MDB_analysis:addr=%d,cmd = %d\r\n",mdb->mdbAddr,mdb_cmd);
 	switch(mdb_cmd){
 		case RESET : 
-			MDB_reset_rpt();
+			MDB_reset_rpt(mdb);
 			break;
 		case SWITCH:
-			MDB_switch_rpt();
+			MDB_switch_rpt(mdb);
 			break;
 		case CTRL:
-			MDB_ctrl_rpt();
+			MDB_ctrl_rpt(mdb);
 			break;
 		case POLL:
 			MDB_poll_rpt();
 			break;
 		case COLUMN:
-			MDB_column_rpt();
+			MDB_column_rpt(mdb);
 			break;
 		case STATUS:
-			MDB_status_rpt();
+			MDB_status_rpt(mdb);
 			break;
 		default:break;
 	}
