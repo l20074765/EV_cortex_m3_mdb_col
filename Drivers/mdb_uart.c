@@ -13,10 +13,10 @@
 ** Descriptions:        The original version       
 ********************************************************************************************************/
 
-//#include "mdb_uart.h"
+#include "mdb_uart.h"
 #include "..\config.h"
 
-#define MDB_DEBUG
+//#define MDB_DEBUG
 #ifdef MDB_DEBUG
 #define print_mdb(...)	Trace(__VA_ARGS__)
 #else
@@ -589,7 +589,6 @@ void MDB_analysis(void)
 {
 	ST_MDB *mdb;
 	mdb = MDB_getPtr();
-	print_mdb("MDB_analysis:addr=%d,cmd = %d\r\n",mdb->mdbAddr,mdb_cmd);
 	switch(mdb_cmd){
 		case RESET : 
 			MDB_reset_rpt(mdb);

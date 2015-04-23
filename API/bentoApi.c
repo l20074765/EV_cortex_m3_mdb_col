@@ -71,6 +71,10 @@ uint8 BT_send(uint8 cmd,uint8 cabinet,uint8 arg,uint8 *rdata)
 {
     uint8 buf[24] = {0},len = 0,ret,rbuf[64] = {0};
     uint16 crc;
+	#ifdef BENTO_DEBUG
+	uint8 i;
+	#endif
+	
 	buf[len++] = BT_HEAD;
 	buf[len++] = 0x07;
 	buf[len++] = cabinet - 1;
@@ -157,7 +161,7 @@ uint8  EV_bento_check(uint8 cabinet,ST_BIN *st_bento)
         return 0;
     }
 
-	ret = BT_send(BT_TYPE_CHECK,1,0x00,buf);
+	ret = BT_send(BT_TYPE_CHECK,cabinet,0x00,buf);
 	if(ret == 1)
 	{
         st_bento->sum = buf[6];
