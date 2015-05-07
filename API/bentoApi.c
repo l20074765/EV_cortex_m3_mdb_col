@@ -30,12 +30,12 @@ static FUN_uartPutStr uartPutStr = Uart0PutStr;
 
 
 
-uint8 BT_recv(uint8 *rdata,uint8 *rlen)
+uint8 BT_recv(uint8 *rdata,uint8 *rlen,uint32 ms)
 {
     uint8 index = 0,len = 0,ch;
     uint16 crc;
 	*rlen = 0;
-	Timer.bentoTimeout = 200;
+	Timer.bentoTimeout = (ms > 200) ? ms / 10 : 20;
     while(Timer.bentoTimeout){ 
 		if(uartIsNotEmpty()){
 			ch = uartGetCh();	
@@ -71,6 +71,7 @@ uint8 BT_send(uint8 cmd,uint8 cabinet,uint8 arg,uint8 *rdata)
 {
     uint8 buf[24] = {0},len = 0,ret,rbuf[64] = {0};
     uint16 crc;
+	uint32 ms;
 	#ifdef BENTO_DEBUG
 	uint8 i;
 	#endif
@@ -95,7 +96,8 @@ uint8 BT_send(uint8 cmd,uint8 cabinet,uint8 arg,uint8 *rdata)
 	
 	uartClear();
 	uartPutStr(buf,len);
-	ret = BT_recv(rbuf,&len);
+	ms = (cmd == BT_TYPE_CHECK) ?  600: 2000;
+	ret = BT_recv(rbuf,&len,ms);
 	
 	#ifdef BENTO_DEBUG
 	print_bento("BT-Recv[%d]:",len);

@@ -43,6 +43,7 @@ static volatile uint8 mdb_addr = 0;
 static volatile uint8 mdb_cmd = 0;
 
 const uint8 m_addr[MDB_BIN_SIZE] = {0x80,0x88,0xE0,0xE8};
+volatile uint8 mdb_bin[MDB_BIN_SIZE] = {0};
 
 /*********************************************************************************************************
 ** MDBÍ¨ÐÅ
@@ -388,7 +389,7 @@ unsigned char MDB_colAddrIsOk(unsigned char addr)
 {
 	uint8 i;
 	for(i = 0;i < MDB_BIN_SIZE;i++){
-		if(addr == m_addr[i]){
+		if(addr == m_addr[i] && mdb_bin[i] == 1){
 			return 1;
 		}
 	}
@@ -452,11 +453,22 @@ uint8 MDB_send(uint8 *data,uint8 len)
 
 void MDB_binInit(void)
 {
-	uint8 i = 0;
+	uint8 i = 0,res,j;
 	for(i = 0;i < MDB_BIN_SIZE;i++){
 		memset(&stMdb[i],0,sizeof(ST_MDB));
-		stMdb[i].binNo = i + 1;
-		stMdb[i].mdbAddr = m_addr[i]; 
+		for(j = 0;j < 2;j++){
+			res = EV_bento_check(i + 1,&stMdb[i].bin);
+			if(res == 1){
+				stMdb[i].binNo = i + 1;
+				stMdb[i].mdbAddr = m_addr[i];
+				mdb_bin[i] = 1;
+				break;
+			}
+			else{
+				stMdb[i].binNo = 0;
+				mdb_bin[i] = 0;
+			}
+		}
 	}
 }
 

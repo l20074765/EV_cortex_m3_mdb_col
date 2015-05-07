@@ -17,7 +17,6 @@ extern OS_EVENT *g_mdb_event; //声明MDb事件
 
 
 
-
 /*********************************************************************************************************
 ** Function name:       CreateMBox
 ** Descriptions:        为任务之间通信创建邮箱和信号量
@@ -95,6 +94,10 @@ static void DEV_mdbReset(ST_MDB *mdb)
 	
 }
 
+
+
+
+
 void DEV_taskPoll(void)
 {
 	ST_MDB *mdb = NULL;
@@ -115,16 +118,23 @@ void DEV_taskPoll(void)
 }
 
 
+
+
 void DEV_task(void *pdata)
 {	
+	//uint32 i;
 	//系统基本接口初始化
 	SystemInit();
+	//print_dev("Hello Booooo...\r\n");
+	FIO2DIR &= ~(0x01UL << 2);
 	//建立邮箱、信号量	
 	CreateMBox();
 	MDB_binInit();//初始化柜子
 	while(1){
 		DEV_taskPoll();
 		msleep(20);
+		//print_dev("I'm running %d....\r\n",i);
+		
 	}
 }
 
