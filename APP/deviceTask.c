@@ -17,7 +17,6 @@ extern OS_EVENT *g_mdb_event; //声明MDb事件
 
 
 
-
 /*********************************************************************************************************
 ** Function name:       CreateMBox
 ** Descriptions:        为任务之间通信创建邮箱和信号量
@@ -69,7 +68,18 @@ static void DEV_mdbSwitch(ST_MDB *mdb)
 static void DEV_mdbCtrl(ST_MDB *mdb)
 {
 	uint8 res;
-	res = EV_bento_light(mdb->binNo,mdb->ctrl.lightCtrl);
+	if(mdb->bin.islight == 1){
+		res = EV_bento_light(mdb->binNo,mdb->ctrl.lightCtrl);
+	}
+	
+	if(mdb->bin.iscool == 1){
+		res = EV_bento_light(mdb->binNo,mdb->ctrl.coolCtrl);
+	}
+	if(mdb->bin.ishot == 1){
+		res = EV_bento_light(mdb->binNo,mdb->ctrl.hotCtrl);
+	}
+	
+	
 	if(res == 1){
 		MDB_setStatus(mdb->mdbAddr,MDB_COL_IDLE);
 	}
@@ -84,16 +94,21 @@ static void DEV_mdbReset(ST_MDB *mdb)
 {
 	uint8 res;
 	print_dev("DEV_mdbReset:%d\r\n",mdb->binNo);
-	res = EV_bento_check(mdb->binNo,&mdb->bin);
+	res = 1;
+	//res = EV_bento_check(mdb->binNo,&mdb->bin);
 	if(res == 1){
 		MDB_setStatus(mdb->mdbAddr,MDB_COL_JUSTRESET);
 	}
 	else{
 		MDB_setStatus(mdb->mdbAddr,MDB_COL_ERROR);
 	}
-	print_dev("MDB_getRequest() = %d\r\n",MDB_getStatus(mdb->mdbAddr));
+	//print_dev("MDB_getRequest() = %d\r\n",MDB_getStatus(mdb->mdbAddr));
 	
 }
+
+
+
+
 
 void DEV_taskPoll(void)
 {
@@ -115,10 +130,15 @@ void DEV_taskPoll(void)
 }
 
 
+
+
 void DEV_task(void *pdata)
 {	
+	//uint32 i;
 	//系统基本接口初始化
 	SystemInit();
+	//print_dev("Hello Booooo...\r\n");
+	FIO2DIR &= ~(0x01UL << 2);
 	//建立邮箱、信号量	
 	CreateMBox();
 	MDB_binInit();//初始化柜子

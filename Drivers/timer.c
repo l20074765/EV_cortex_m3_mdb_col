@@ -24,7 +24,7 @@ TIMER_ST Timer;
 
 static unsigned short timerSize = sizeof(TIMER_ST) / 2;
 
-
+static unsigned char reset_rcx = 0;
 
 
 
@@ -94,6 +94,7 @@ void InitTimer(unsigned char TimerNumb,unsigned int TimerInterval)
 void TIMER0_IRQHandler (void)
 {  
 	unsigned short *ptr,i;
+	
 	OSIntEnter();
 	T0IR = 1;	
 	
@@ -101,6 +102,20 @@ void TIMER0_IRQHandler (void)
 	for(i = 0;i < timerSize;i++){
 		if(ptr[i])	ptr[i]--;
 	}
+	if(FIO2PIN & (0x01UL << 2)){
+		reset_rcx = 0;
+	}
+	else{
+		reset_rcx++;
+	}
+	
+	if(reset_rcx > 10){
+		reset_rcx = 0;
+		zyReset(ZY_HARD_RESET);
+	}
+	
+	
+	
 	OSIntExit();
 }
 /*********************************************************************************************************
