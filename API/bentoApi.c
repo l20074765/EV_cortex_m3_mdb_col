@@ -19,7 +19,7 @@ static FUN_uartPutStr uartPutStr = Uart0PutStr;
 #endif
 
 
-//#define BENTO_DEBUG
+#define BENTO_DEBUG
 #ifdef BENTO_DEBUG
 #define print_bento(...)	Trace(__VA_ARGS__)
 #else
@@ -41,7 +41,7 @@ uint8 BT_recv(uint8 *rdata,uint8 *rlen,uint32 ms)
 			ch = uartGetCh();	
 			rdata[index++] = ch;
 			if(index == 1){
-                if(ch != BT_HEAD + 1){
+                if(ch != (BT_HEAD + 1)){
 					index = 0;
 				}    
             }
@@ -96,7 +96,7 @@ uint8 BT_send(uint8 cmd,uint8 cabinet,uint8 arg,uint8 *rdata)
 	
 	uartClear();
 	uartPutStr(buf,len);
-	ms = (cmd == BT_TYPE_CHECK) ?  600: 2000;
+	ms = (cmd == BT_TYPE_CHECK) ?  1000: 2000;
 	ret = BT_recv(rbuf,&len,ms);
 	
 	#ifdef BENTO_DEBUG
@@ -126,6 +126,18 @@ uint8 BT_send(uint8 cmd,uint8 cabinet,uint8 arg,uint8 *rdata)
 			else
 				return 0;
 		}
+		else if(cmd == BT_TYPE_HOT){
+			if(rbuf[3] == BT_TYPE_HOT_ACK)
+				return 1;
+			else
+				return 0;
+		}
+		else if(cmd == BT_TYPE_COOL){
+			if(rbuf[3] == BT_TYPE_COOL_ACK)
+				return 1;
+			else
+				return 0;
+		}
 	}
 	return 0;
 }
@@ -134,11 +146,17 @@ uint8 BT_send(uint8 cmd,uint8 cabinet,uint8 arg,uint8 *rdata)
 
 uint8 BT_open(uint8 cabinet,uint8 box)
 {
-    uint8 ret;
+    uint8 ret,i,ok = 0;
 	if(cabinet <= 0 || box <= 0)
-		return 0;	
-    ret = BT_send(BT_TYPE_OPEN,cabinet,box,NULL);
-    return ret;
+		return 0;
+	
+	ok = 0;
+	for(i = 0;i < 2;i++){
+		ret = BT_send(BT_TYPE_OPEN,cabinet,box,NULL);
+		ok = (ret == 1) ? 1 : ok;
+		msleep(300);
+	}
+    return ok;
 }
 
 
@@ -148,6 +166,26 @@ uint8 EV_bento_light(uint8 cabinet,uint8 flag)
 	if(cabinet <= 0)
 		return 0;
     ret = BT_send(BT_TYPE_LIGHT,cabinet,flag,NULL);
+	return ret;
+}
+
+
+uint8 EV_bento_hot(uint8 cabinet,uint8 flag)
+{
+	int ret = 0;
+	if(cabinet <= 0)
+		return 0;
+    ret = BT_send(BT_TYPE_HOT,cabinet,flag,NULL);
+	return ret;
+}
+
+
+uint8 EV_bento_col(uint8 cabinet,uint8 flag)
+{
+	int ret = 0;
+	if(cabinet <= 0)
+		return 0;
+    ret = BT_send(BT_TYPE_HOT,cabinet,flag,NULL);
 	return ret;
 }
 
@@ -164,8 +202,7 @@ uint8  EV_bento_check(uint8 cabinet,ST_BIN *st_bento)
     }
 
 	ret = BT_send(BT_TYPE_CHECK,cabinet,0x00,buf);
-	if(ret == 1)
-	{
+	if(ret == 1){
         st_bento->sum = buf[6];
 		st_bento->ishot = (buf[8] & 0x01);
 		st_bento->iscool = ((buf[8] >> 1) & 0x01);

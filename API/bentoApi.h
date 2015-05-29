@@ -18,8 +18,8 @@
 
 
 
-
-
+uint8 EV_bento_hot(uint8 cabinet,uint8 flag);
+uint8 EV_bento_col(uint8 cabinet,uint8 flag);
 uint8 EV_bento_light(uint8 cabinet,uint8 flag);
 uint8  EV_bento_check(uint8 cabinet,ST_BIN *st_bento);
 uint8 BT_open(uint8 cabinet,uint8 box);

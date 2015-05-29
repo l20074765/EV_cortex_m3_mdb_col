@@ -16,7 +16,7 @@
 #include "mdb_uart.h"
 #include "..\config.h"
 
-//#define MDB_DEBUG
+#define MDB_DEBUG
 #ifdef MDB_DEBUG
 #define print_mdb(...)	Trace(__VA_ARGS__)
 #else
@@ -461,13 +461,22 @@ void MDB_binInit(void)
 			if(res == 1){
 				stMdb[i].binNo = i + 1;
 				stMdb[i].mdbAddr = m_addr[i];
-				mdb_bin[i] = 1;
+				print_mdb("MDB_binInit:mdb[%d].addr=%02x,no=%d,sum=%d\r\n",
+				i,stMdb[i].mdbAddr,stMdb[i].binNo,stMdb[i].bin.sum);
 				break;
 			}
 			else{
 				stMdb[i].binNo = 0;
-				mdb_bin[i] = 0;
 			}
+		}
+	}
+	
+	for(i = 0;i < MDB_BIN_SIZE;i++){
+		if(stMdb[i].binNo == 0){
+			mdb_bin[i] = 0;
+		}
+		else{
+			mdb_bin[i] = 1;
 		}
 	}
 }
@@ -479,7 +488,7 @@ void MDB_binInit(void)
 static void MDB_poll_rpt(void)
 {
 	uint8 s = MDB_getStatus(mdb_addr);
-	print_mdb("MDB_poll_rpt:s = %d addr=%x\r\n",s,mdb_addr);
+	//print_mdb("MDB_poll_rpt:s = %d addr=%x\r\n",s,mdb_addr);
 	MDB_setSendStatus(mdb_addr,s);
 	MDB_send(&s,1);
 }
@@ -491,7 +500,7 @@ static void MDB_reset_rpt(ST_MDB *mdb)
 		MDB_sendACK(0);
 	}
 	else{
-		memset(&mdb->bin,0,sizeof(ST_BIN));
+		//memset(&mdb->bin,0,sizeof(ST_BIN));
 		mdb->cmd = G_MDB_RESET;
 		MDB_setStatus(mdb->mdbAddr,MDB_COL_BUSY);
 		MDB_sendACK(1);

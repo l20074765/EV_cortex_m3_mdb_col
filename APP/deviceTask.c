@@ -68,7 +68,18 @@ static void DEV_mdbSwitch(ST_MDB *mdb)
 static void DEV_mdbCtrl(ST_MDB *mdb)
 {
 	uint8 res;
-	res = EV_bento_light(mdb->binNo,mdb->ctrl.lightCtrl);
+	if(mdb->bin.islight == 1){
+		res = EV_bento_light(mdb->binNo,mdb->ctrl.lightCtrl);
+	}
+	
+	if(mdb->bin.iscool == 1){
+		res = EV_bento_light(mdb->binNo,mdb->ctrl.coolCtrl);
+	}
+	if(mdb->bin.ishot == 1){
+		res = EV_bento_light(mdb->binNo,mdb->ctrl.hotCtrl);
+	}
+	
+	
 	if(res == 1){
 		MDB_setStatus(mdb->mdbAddr,MDB_COL_IDLE);
 	}
@@ -83,14 +94,15 @@ static void DEV_mdbReset(ST_MDB *mdb)
 {
 	uint8 res;
 	print_dev("DEV_mdbReset:%d\r\n",mdb->binNo);
-	res = EV_bento_check(mdb->binNo,&mdb->bin);
+	res = 1;
+	//res = EV_bento_check(mdb->binNo,&mdb->bin);
 	if(res == 1){
 		MDB_setStatus(mdb->mdbAddr,MDB_COL_JUSTRESET);
 	}
 	else{
 		MDB_setStatus(mdb->mdbAddr,MDB_COL_ERROR);
 	}
-	print_dev("MDB_getRequest() = %d\r\n",MDB_getStatus(mdb->mdbAddr));
+	//print_dev("MDB_getRequest() = %d\r\n",MDB_getStatus(mdb->mdbAddr));
 	
 }
 
@@ -133,8 +145,6 @@ void DEV_task(void *pdata)
 	while(1){
 		DEV_taskPoll();
 		msleep(20);
-		//print_dev("I'm running %d....\r\n",i);
-		
 	}
 }
 
