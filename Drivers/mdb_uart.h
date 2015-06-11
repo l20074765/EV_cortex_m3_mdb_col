@@ -65,13 +65,22 @@
 **MDB从设备定义
 *********************************************************************************************************/
 
-
+#if 0
 #define RESET			0x00
 #define SWITCH			0x01
 #define CTRL			0x02
 #define COLUMN			0x03
 #define POLL			0x04
 #define STATUS			0x05
+#endif
+
+#define RESET			0x01
+#define SWITCH			0x02
+#define CTRL			0x03
+#define COLUMN			0x04
+#define POLL			0x05
+#define STATUS			0x06
+
 
 #define  MDB_ACK 		  	0x00			//应答
 #define  MDB_RET 		  	0xAA			//重试
