@@ -146,17 +146,12 @@ uint8 BT_send(uint8 cmd,uint8 cabinet,uint8 arg,uint8 *rdata)
 
 uint8 BT_open(uint8 cabinet,uint8 box)
 {
-    uint8 ret,i,ok = 0;
+    uint8 ret;
 	if(cabinet <= 0 || box <= 0)
 		return 0;
 	
-	ok = 0;
-	for(i = 0;i < 2;i++){
-		ret = BT_send(BT_TYPE_OPEN,cabinet,box,NULL);
-		ok = (ret == 1) ? 1 : ok;
-		msleep(300);
-	}
-    return ok;
+	ret = BT_send(BT_TYPE_OPEN,cabinet,box,NULL);
+    return ret;
 }
 
 

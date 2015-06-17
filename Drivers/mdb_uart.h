@@ -183,7 +183,7 @@ void Uart2IsrHandler(void) ;
 *********************************************************************************************************/
 unsigned char MDB_colAddrIsOk(unsigned char addr);
 unsigned char MDB_recvOk(unsigned char len);
-void MDB_analysis(void);
+uint8 MDB_analysis(void);
 void MDB_binInit(void);
 ST_MDB *MDB_getPtr(void);
 

@@ -92,18 +92,9 @@ static void DEV_mdbCtrl(ST_MDB *mdb)
 
 static void DEV_mdbReset(ST_MDB *mdb)
 {
-	uint8 res;
 	print_dev("DEV_mdbReset:%d\r\n",mdb->binNo);
-	res = 1;
-	//res = EV_bento_check(mdb->binNo,&mdb->bin);
-	if(res == 1){
-		MDB_setStatus(mdb->mdbAddr,MDB_COL_JUSTRESET);
-	}
-	else{
-		MDB_setStatus(mdb->mdbAddr,MDB_COL_ERROR);
-	}
+	MDB_setStatus(mdb->mdbAddr,MDB_COL_JUSTRESET);
 	//print_dev("MDB_getRequest() = %d\r\n",MDB_getStatus(mdb->mdbAddr));
-	
 }
 
 

@@ -50,6 +50,7 @@ volatile uint8 mdb_bin[MDB_BIN_SIZE] = {0};
 *********************************************************************************************************/
 volatile uint8 m_mdbStatus[MDB_BIN_SIZE] = {MDB_COL_IDLE};
 volatile uint8 m_mdbSendStatus[MDB_BIN_SIZE] = {MDB_COL_IDLE};
+//volatile uint8 m_mdbLock[MDB_BIN_SIZE] = {0};
 ST_MDB stMdb[MDB_BIN_SIZE];
 
 
@@ -353,8 +354,13 @@ void Uart2IsrHandler(void)
 			if(rx < MDB_BUF_SIZE){
 				if(MDB_recvOk(rx)){ //接收数据完成准备发送回应 必须尽快
 					if(crc == recvbuf[rx - 1]){
-						MDB_analysis();
-						mdb_status = MDB_DEV_RECV_ACK;
+						if(MDB_analysis() == 1){
+							mdb_status = MDB_DEV_RECV_ACK;
+						}
+						else{
+							mdb_status = MDB_DEV_IDLE;
+						}
+						
 					}
 					else{
 						mdb_status = MDB_DEV_IDLE;
@@ -516,7 +522,7 @@ static void MDB_switch_rpt(ST_MDB *mdb)
 	}
 	else{
 		column = recvbuf[1];
-		mdb = MDB_getPtr();
+		//mdb = MDB_getPtr();
 		mdb->cmd = G_MDB_SWITCH;
 		mdb->sw.col = column;
 		MDB_setStatus(mdb->mdbAddr,MDB_COL_BUSY);
@@ -546,7 +552,7 @@ static void MDB_ctrl_rpt(ST_MDB *mdb)
 
 static void MDB_column_rpt(ST_MDB *mdb)
 {
-	uint8 index = 0,i,j,temp,colindex = 0;
+	uint8 index = 0,i;
 	uint8 buf[36] = {0};
 	ST_BIN *bin;
 	bin = &mdb->bin;
@@ -554,6 +560,8 @@ static void MDB_column_rpt(ST_MDB *mdb)
 		MDB_sendACK(0);
 	}
 	else{
+		
+		#if 0
 		//bin->sum = 64;	
 		for(i = 0;i < (bin->sum / 8);i++){
 			temp = 0;
@@ -573,10 +581,17 @@ static void MDB_column_rpt(ST_MDB *mdb)
 			}
 			buf[index++] = temp;
 		}
+		#endif
+		
+		for(i = 0;i < 8;i++){
+			buf[index++] = 0x00;
+		}
+
 		buf[index++] = bin->sum;
 		buf[index++] = bin->sensorFault & 0x01;
 		buf[index++] = bin->coolTemp;
-		buf[index++] = bin->hotTemp;	
+		buf[index++] = bin->hotTemp;
+		buf[index++] = 0x00; //预留
 		MDB_send(buf,index);		
 	}
 	
@@ -592,12 +607,12 @@ static void MDB_status_rpt(ST_MDB *mdb)
 		MDB_sendACK(0);
 	}
 	else{
-		buf[index++] = 0x12;
-		buf[index++] = 0x34;
+		buf[index++] = 0x15;
+		buf[index++] = 0x24;
 		buf[index++] = bin->sum;
 		buf[index++] = 0;//reserved
 		buf[index++] = 0;//reserved
-		buf[index++] = (0x00 << 3) | (bin->ishot << 1) | (bin->iscool << 0);//feature
+		buf[index++] = (0x00 << 2) | (bin->ishot << 1) | (bin->iscool << 0);//feature
 		buf[index++] = 0;//reserved
 		buf[index++] = 0;//reserved
 		MDB_send(buf,index);
@@ -606,10 +621,15 @@ static void MDB_status_rpt(ST_MDB *mdb)
 	
 }
 
-void MDB_analysis(void)
+uint8 MDB_analysis(void)
 {
+	uint8 res;
 	ST_MDB *mdb;
 	mdb = MDB_getPtr();
+	if(mdb == NULL){
+		return 0;
+	}
+	res = 1;
 	switch(mdb_cmd){
 		case RESET : 
 			MDB_reset_rpt(mdb);
@@ -629,9 +649,12 @@ void MDB_analysis(void)
 		case STATUS:
 			MDB_status_rpt(mdb);
 			break;
-		default:break;
+		default:
+				res = 0;
+				break;
 	}
 	//延时
+	return res;
 }	
 
 
