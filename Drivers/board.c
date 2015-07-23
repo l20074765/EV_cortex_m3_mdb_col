@@ -19,9 +19,9 @@
 
 
 
-
-
-
+static uint8 m_ledModel = 0;
+static uint8 m_ledIsOpen = 0;
+static uint8 m_ledTimeout = 0;
 
 /*********************************************************************************************************
 ** Function name:     	XorCheck
@@ -85,6 +85,81 @@ void msleep(unsigned int msec)
 	unsigned int temp;
 	temp = (msec > 10) ? msec/5 : 2;
 	OSTimeDly(temp);
+}
+
+
+void LED_ctrl(uint8 s)
+{
+	//no += 4;
+	FIO3DIR |= (0x01UL << 26);
+	if(s == 0){
+		FIO3SET |= (0x01UL << 26);
+		m_ledIsOpen = 0;
+	}
+	else{
+		m_ledIsOpen = 1;
+		FIO3CLR |= (0x01UL << 26);
+	}
+}
+
+
+
+
+void LED_setModel(uint8 m)
+{
+	m_ledModel = m;
+	if(m == 2){
+		m_ledTimeout = 100; //1秒超时
+	}
+}
+
+void LED_model(void)
+{
+	static uint8 tick = 0;
+	//格子柜初始化无柜子连接  1秒交替闪烁
+	if(m_ledModel == 1){
+		if(tick >= 100){
+			tick = 0;
+			if(m_ledIsOpen == 1){
+				LED_ctrl(0);
+			}
+			else{
+				LED_ctrl(1);
+			}
+		}
+		else{
+			tick++;
+		}
+	}
+	else if(m_ledModel == 2){ //数据通信 快速闪烁
+		
+		if(tick >= 3){
+			tick = 0;
+			if(m_ledIsOpen == 1){
+				LED_ctrl(0);
+			}
+			else{
+				LED_ctrl(1);
+			}
+		}
+		else{
+			tick++;
+		}
+		if(m_ledTimeout){
+			m_ledTimeout--;
+		}
+		else{
+			m_ledModel = 0;
+		}
+	}
+	else {
+		if(m_ledIsOpen == 0){
+			LED_ctrl(1);
+		}
+	}
+	
+	
+	
 }
 
 

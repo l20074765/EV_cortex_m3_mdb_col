@@ -459,7 +459,7 @@ uint8 MDB_send(uint8 *data,uint8 len)
 
 void MDB_binInit(void)
 {
-	uint8 i = 0,res,j;
+	uint8 i = 0,res,j,flag = 0;
 	for(i = 0;i < MDB_BIN_SIZE;i++){
 		memset(&stMdb[i],0,sizeof(ST_MDB));
 		for(j = 0;j < 2;j++){
@@ -477,14 +477,21 @@ void MDB_binInit(void)
 		}
 	}
 	
+	flag = 0;
 	for(i = 0;i < MDB_BIN_SIZE;i++){
 		if(stMdb[i].binNo == 0){
 			mdb_bin[i] = 0;
 		}
 		else{
 			mdb_bin[i] = 1;
+			flag++;
 		}
 	}
+	
+	if(flag == 0){  //无柜子连接
+		LED_setModel(1);
+	}
+	
 }
 
 
@@ -630,6 +637,7 @@ uint8 MDB_analysis(void)
 		return 0;
 	}
 	res = 1;
+	LED_setModel(2);
 	switch(mdb_cmd){
 		case RESET : 
 			MDB_reset_rpt(mdb);
@@ -654,6 +662,7 @@ uint8 MDB_analysis(void)
 				break;
 	}
 	//延时
+	//LED_setModel(0);
 	return res;
 }	
 

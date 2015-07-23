@@ -128,6 +128,7 @@ void DEV_task(void *pdata)
 	//uint32 i;
 	//系统基本接口初始化
 	SystemInit();
+	LED_ctrl(1);
 	//print_dev("Hello Booooo...\r\n");
 	FIO2DIR &= ~(0x01UL << 2);
 	//建立邮箱、信号量	

@@ -114,7 +114,7 @@ void TIMER0_IRQHandler (void)
 		zyReset(ZY_HARD_RESET);
 	}
 	
-	
+	LED_model();
 	
 	OSIntExit();
 }
